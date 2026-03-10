@@ -3,6 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { GlobalNavigation } from "@/components/GlobalNavigation";
 
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
+import { put } from "@vercel/blob";
+
+const { url } = await put('articles/blob.txt', 'Hello World!', { access: 'public' });
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,7 +36,7 @@ export default function RootLayout({
       >
         <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-neon-gold/5 to-transparent pointer-events-none" />
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-neon-purple/5 to-transparent pointer-events-none" />
-        
+
         {children}
         <GlobalNavigation />
       </body>
