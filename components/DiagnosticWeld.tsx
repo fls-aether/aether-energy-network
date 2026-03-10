@@ -1,0 +1,117 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { WireframeMerkaba } from "./WireframeMerkaba";
+import { HexagonalRadarChart } from "./HexagonalRadarChart";
+
+interface DiagnosticWeldProps {
+  onComplete: () => void;
+}
+
+const DIAGNOSTIC_MESSAGES = [
+  "Accessing Starseed BIOS...",
+  "Mapping Tropical Hardware...",
+  "Retrieving Sidereal Timeline...",
+  "Calibrating Nodal Crossings...",
+  "Weld Complete. Booting Sovereign System..."
+];
+
+export function DiagnosticWeld({ onComplete }: DiagnosticWeldProps) {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [show2D, setShow2D] = useState(false);
+  const [zoomComplete, setZoomComplete] = useState(false);
+
+  useEffect(() => {
+    // Stage 1: Text cascade sequence
+    const messageInterval = setInterval(() => {
+      setMessageIndex((prev) => {
+        if (prev < DIAGNOSTIC_MESSAGES.length - 1) {
+          if (prev === 2) {
+            // Trigger the transition visualization midway
+            setShow2D(true);
+          }
+          return prev + 1;
+        }
+        clearInterval(messageInterval);
+        return prev;
+      });
+    }, 2500);
+
+    // Stage 2: Proceed to Phase 3 after sequence completes
+    const totalDuration = (DIAGNOSTIC_MESSAGES.length * 2500) + 1000;
+    const finalTimer = setTimeout(() => {
+      onComplete();
+    }, totalDuration);
+
+    return () => {
+      clearInterval(messageInterval);
+      clearTimeout(finalTimer);
+    };
+  }, [onComplete]);
+
+  return (
+    <div className="relative w-full h-screen bg-background flex flex-col items-center justify-center overflow-hidden">
+      
+      {/* 3D to 2D Flattening Transition Container */}
+      <div className="relative w-96 h-96 flex items-center justify-center">
+        {/* The 3D Merkaba fading out */}
+        <motion.div
+          animate={{
+            scale: show2D ? 0.2 : 1,
+            opacity: show2D ? 0 : 1,
+            filter: show2D ? 'blur(10px)' : 'blur(0px)'
+          }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          className="absolute inset-0 z-10"
+        >
+          <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+            {/* The Merkaba is technically "flattening" visually by stopping its fast rotation and fading */}
+            <WireframeMerkaba intensity={1} isFlattening={show2D} />
+          </Canvas>
+        </motion.div>
+
+        {/* The 2D Radar fading in */}
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0, rotate: -30 }}
+          animate={{
+            scale: show2D ? 1 : 0.5,
+            opacity: show2D ? 1 : 0,
+            rotate: show2D ? 0 : -30
+          }}
+          transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+          className="absolute inset-0 z-20 flex items-center justify-center"
+        >
+          {show2D && <HexagonalRadarChart />}
+        </motion.div>
+      </div>
+
+      {/* Text Cascade Console */}
+      <div className="mt-16 h-32 w-full max-w-xl px-4 font-mono text-sm">
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={messageIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <span className="text-neon-gold/70 mr-2">{"[v." + new Date().getTime().toString().slice(-4) + "]"}</span>
+            <span className={messageIndex === DIAGNOSTIC_MESSAGES.length - 1 ? "text-neon-gold font-bold" : "text-neon-amber"}>
+              {DIAGNOSTIC_MESSAGES[messageIndex]}
+            </span>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Console history lines logic (Optional cool effect) */}
+        <div className="mt-4 flex flex-col items-center opacity-30 text-xs">
+          {DIAGNOSTIC_MESSAGES.slice(0, messageIndex).reverse().map((msg, idx) => (
+             <div key={idx} className="text-foreground tracking-widest">{msg}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
