@@ -5,9 +5,6 @@ import { GlobalNavigation } from "@/components/GlobalNavigation";
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
-import { put } from "@vercel/blob";
-
-const { url } = await put('articles/blob.txt', 'Hello World!', { access: 'public' });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
