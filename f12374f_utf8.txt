@@ -1,0 +1,197 @@
+﻿commit f12374f84d12cd1a439644c36144dde74ae6be0d
+Author: fls-aether <thomas.seyfors@gmail.com>
+Date:   Wed Mar 11 03:02:54 2026 -0400
+
+    UI Polish: Neutralize tap artifact, upgrade to Torus Knot geometry, refine time input UX
+
+diff --git a/app/page.tsx b/app/page.tsx
+index d0ac8bc..c5b6ba4 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -54,7 +54,8 @@ export default function Home() {
+           >
+             <button 
+                onClick={() => setPhase("INTAKE")}
+-               className="relative flex flex-col items-center justify-center group cursor-pointer outline-none mt-12 focus:ring-2 focus:ring-neon-gold focus:ring-offset-4 focus:ring-offset-background p-4 rounded-xl"
++               style={{ WebkitTapHighlightColor: 'transparent' }}
++               className="relative flex flex-col items-center justify-center group cursor-pointer outline-none focus:outline-none mt-12 p-4 rounded-xl"
+             >
+               {/* High-Fidelity Asset Container */}
+               <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center z-10 transition-transform duration-700 group-hover:scale-105">
+diff --git a/components/IntakeManifold.tsx b/components/IntakeManifold.tsx
+index 3a904cb..8aa6c54 100644
+--- a/components/IntakeManifold.tsx
++++ b/components/IntakeManifold.tsx
+@@ -16,6 +16,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+   const [vibrationalKey, setVibrationalKey] = useState("");
+   const [tempDate, setTempDate] = useState("");
+   const [tempTime, setTempTime] = useState("");
++  const [timePeriod, setTimePeriod] = useState("AM");
+   const [spatialCoords, setSpatialCoords] = useState("");
+   const [intensity, setIntensity] = useState(0);
+ 
+@@ -51,7 +52,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+   };
+ 
+   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+-    let val = e.target.value.toUpperCase().replace(/[^0-9AMP\s:]/g, '');
++    let val = e.target.value.replace(/[^0-9:]/g, '');
+     
+     // Remove extra colons (keep only the first one)
+     const colonIndex = val.indexOf(':');
+@@ -66,10 +67,17 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+         val = val.slice(0, 2) + ':' + val.slice(2);
+     }
+ 
+-    // Collapse multiple spaces
+-    val = val.replace(/\s+/g, ' ');
++    // Auto convert > 12 to PM
++    if (val.length >= 2) {
++      let hours = parseInt(val.slice(0, 2), 10);
++      if (hours > 12) {
++        hours = hours - 12;
++        setTimePeriod("PM");
++        val = hours.toString().padStart(2, '0') + val.slice(2);
++      }
++    }
+ 
+-    setTempTime(val.substring(0, 8)); // Support up to HH:MM AM
++    setTempTime(val.substring(0, 5)); // Support up to HH:MM
+   };
+ 
+   const handleSpatialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+@@ -84,11 +92,11 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+ 
+   // Calculate generic intensity based on input length
+   useEffect(() => {
+-    const totalLength = vibrationalKey.length + tempDate.length + tempTime.length + spatialCoords.length;
++    const totalLength = vibrationalKey.length + tempDate.length + tempTime.length + timePeriod.length + spatialCoords.length;
+     // Cap intensity multiplier at 1
+     const newIntensity = Math.min(totalLength / 50, 1);
+     setIntensity(newIntensity);
+-  }, [vibrationalKey, tempDate, tempTime, spatialCoords]);
++  }, [vibrationalKey, tempDate, tempTime, timePeriod, spatialCoords]);
+ 
+   const handleSubmit = (e: React.FormEvent) => {
+     e.preventDefault();
+@@ -109,7 +117,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+       }
+       
+       // Phase 15 SPA Biometric Calculation
+-      const derivedStats = calculateStats(vibrationalKey, tempDate, tempTime, spatialCoords);
++      const derivedStats = calculateStats(vibrationalKey, tempDate, `${tempTime} ${timePeriod}`, spatialCoords);
+       setStats(derivedStats);
+ 
+       // Phase 26 Sync-Code Generation
+@@ -229,14 +237,24 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+             <label className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
+               Temporal Inception (Time)
+             </label>
+-            <input
+-              type="text"
+-              value={tempTime}
+-              onChange={handleTimeChange}
+-              className="w-full bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors"
+-              placeholder="HH:MM AM/PM"
+-              required
+-            />
++            <div className="flex gap-4">
++              <input
++                type="text"
++                value={tempTime}
++                onChange={handleTimeChange}
++                className="flex-1 bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors"
++                placeholder="HH:MM"
++                required
++              />
++              <select
++                value={timePeriod}
++                onChange={(e) => setTimePeriod(e.target.value)}
++                className="w-24 bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors cursor-pointer appearance-none text-center"
++              >
++                <option value="AM">AM</option>
++                <option value="PM">PM</option>
++              </select>
++            </div>
+           </div>
+ 
+           <div className="space-y-2 relative z-50">
+diff --git a/components/WireframeMerkaba.tsx b/components/WireframeMerkaba.tsx
+index 44904d2..8987a62 100644
+--- a/components/WireframeMerkaba.tsx
++++ b/components/WireframeMerkaba.tsx
+@@ -12,13 +12,13 @@ interface WireframeMerkabaProps {
+ export function WireframeMerkaba({ intensity, isFlattening = false }: WireframeMerkabaProps) {
+   const groupRef = useRef<THREE.Group>(null);
+   const materialRef1 = useRef<THREE.MeshStandardMaterial>(null);
+-  const materialRef2 = useRef<THREE.MeshStandardMaterial>(null);
+ 
+   // Base rotation speed + intensity multiplier
+   useFrame((state, delta) => {
+     if (groupRef.current && !isFlattening) {
+-      groupRef.current.rotation.y += delta * (0.5 + intensity * 5);
+-      groupRef.current.rotation.x += delta * (0.2 + intensity * 2);
++      // Kinetic Dampening: Multiply intensity by a much smaller decimal to avoid frantic spinning
++      groupRef.current.rotation.y += delta * (0.2 + intensity * 0.5);
++      groupRef.current.rotation.x += delta * (0.1 + intensity * 0.2);
+     }
+     
+     // Animate glow based on intensity
+@@ -30,38 +30,17 @@ export function WireframeMerkaba({ intensity, isFlattening = false }: WireframeM
+         0.1
+       );
+     }
+-    if (materialRef2.current) {
+-      materialRef2.current.emissiveIntensity = THREE.MathUtils.lerp(
+-        materialRef2.current.emissiveIntensity,
+-        targetEmissiveIntensity,
+-        0.1
+-      );
+-    }
+   });
+ 
+   return (
+     <group ref={groupRef}>
+-      {/* Upward pointing tetrahedron */}
++      {/* Complex Geometric Torus Knot */}
+       <mesh>
+-        <tetrahedronGeometry args={[2, 0]} />
++        <torusKnotGeometry args={[1.2, 0.4, 128, 32]} />
+         <meshStandardMaterial
+           ref={materialRef1}
+-          color="#00f0ff"
+-          emissive="#00f0ff"
+-          emissiveIntensity={0.5}
+-          wireframe={true}
+-          transparent={true}
+-          opacity={isFlattening ? 0 : 1}
+-        />
+-      </mesh>
+-
+-      {/* Downward pointing tetrahedron */}
+-      <mesh rotation={[Math.PI, 0, 0]}>
+-        <tetrahedronGeometry args={[2, 0]} />
+-        <meshStandardMaterial
+-          ref={materialRef2}
+-          color="#00f0ff"
+-          emissive="#00f0ff"
++          color="#D4AF37"
++          emissive="#D4AF37"
+           emissiveIntensity={0.5}
+           wireframe={true}
+           transparent={true}
+diff --git a/public/images/aether-network-logo-inner-geometry (OG).png b/public/images/aether-network-logo-inner-geometry (OG).png
+new file mode 100644
+index 0000000..2e37fca
+Binary files /dev/null and b/public/images/aether-network-logo-inner-geometry (OG).png differ
+diff --git a/public/images/aether-network-logo-inner-geometry.png b/public/images/aether-network-logo-inner-geometry.png
+index 2e37fca..db7e7dd 100644
+Binary files a/public/images/aether-network-logo-inner-geometry.png and b/public/images/aether-network-logo-inner-geometry.png differ
+diff --git a/public/images/aether-network-logo-inner-intuition.png b/public/images/aether-network-logo-inner-intuition.png
+new file mode 100644
+index 0000000..7aca4ff
+Binary files /dev/null and b/public/images/aether-network-logo-inner-intuition.png differ
+diff --git a/public/images/aether-network-logo-inner-protection.png b/public/images/aether-network-logo-inner-protection.png
+new file mode 100644
+index 0000000..dcde278
+Binary files /dev/null and b/public/images/aether-network-logo-inner-protection.png differ
