@@ -49,7 +49,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
 
   const handleGoogleAuth = async () => {
     setIsAuthenticating(true);
-    await signIn('google');
+    await signIn('google', { callbackUrl: '/' });
     // We let the page redirect or update session naturally
   };
 
