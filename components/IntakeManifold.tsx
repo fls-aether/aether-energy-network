@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import { WireframeMerkaba } from "./WireframeMerkaba";
@@ -8,6 +8,7 @@ import { useOperatorStore } from "@/lib/store";
 import { calculateStats } from "@/lib/calculations";
 import { generateSyncCode } from "@/lib/utils";
 import { useSession, signIn } from "next-auth/react";
+import debounce from 'lodash.debounce';
 
 interface IntakeManifoldProps {
   onComplete: () => void;
@@ -27,15 +28,10 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showPlacesDropdown, setShowPlacesDropdown] = useState(false);
+  const [placesPredictions, setPlacesPredictions] = useState<string[]>([]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { setAgeData, setStats, setSyncCode } = useOperatorStore();
-
-  const MOCK_PLACES = [
-    "Adak, AK, USA",
-    "New York, NY, USA",
-    "New Delhi, DL, IND",
-    "Newcastle upon Tyne, UK",
-  ];
 
   // Auto-populate from NextAuth Session
   useEffect(() => {
@@ -47,11 +43,47 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
     }
   }, [session, vibrationalKey]);
 
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowPlacesDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleGoogleAuth = async () => {
     setIsAuthenticating(true);
     await signIn('google', { callbackUrl: '/' });
     // We let the page redirect or update session naturally
   };
+
+  const fetchPlaces = async (input: string) => {
+    if (!input || input.trim().length < 2) {
+      setPlacesPredictions([]);
+      setShowPlacesDropdown(false);
+      return;
+    }
+    
+    try {
+      // Using an API route to safely hide the key and bypass pure CORS blocks on Google map's direct REST API
+      const response = await fetch(`/api/places?input=${encodeURIComponent(input)}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Assuming data is an array of formatted description strings
+        setPlacesPredictions(data.predictions || []);
+        setShowPlacesDropdown(data.predictions && data.predictions.length > 0);
+      }
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    }
+  };
+
+  // Debounced version of fetchPlaces
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedFetchPlaces = useCallback(debounce(fetchPlaces, 300), []);
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value.replace(/[\s-]/g, '/').replace(/[^0-9/]/g, '');
@@ -90,8 +122,9 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
   };
 
   const handleSpatialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSpatialCoords(e.target.value);
-    setShowPlacesDropdown(e.target.value.length >= 2);
+    const value = e.target.value;
+    setSpatialCoords(value);
+    debouncedFetchPlaces(value);
   };
 
   const selectPlace = (place: string) => {
@@ -270,7 +303,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
             <label className="block text-xs font-mono text-neon-gold uppercase tracking-widest">
                Spatial Coordinates
             </label>
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <input
                 type="text"
                 value={spatialCoords}
@@ -280,16 +313,16 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
                 required
               />
               
-              {/* Places Autocomplete Mock Dropdown */}
+              {/* Places Autocomplete Dropdown */}
               <AnimatePresence>
                   {showPlacesDropdown && (
                       <motion.ul
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 5 }}
-                          className="absolute top-full left-0 w-full mt-2 bg-black/90 border border-neon-cyan/50 shadow-[0_10px_30px_rgba(0,240,255,0.2)] backdrop-blur-xl overflow-hidden rounded"
+                          className="absolute top-full left-0 w-full mt-2 z-50 bg-black/90 border border-neon-cyan/50 shadow-[0_10px_30px_rgba(0,240,255,0.2)] backdrop-blur-xl overflow-hidden rounded"
                       >
-                          {MOCK_PLACES.map((place, idx) => (
+                          {placesPredictions.map((place, idx) => (
                               <li 
                                   key={idx}
                                   onClick={() => selectPlace(place)}

@@ -7,6 +7,7 @@ import { DiagnosticWeld } from "@/components/DiagnosticWeld";
 import { SovereignDashboard } from "@/components/SovereignDashboard";
 import Image from "next/image";
 import { useOperatorStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 
 type AppPhase = "SPLASH" | "INTAKE" | "DIAGNOSTIC" | "SOVEREIGN";
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [phase, setPhase] = useState<AppPhase>("SPLASH");
   const { isRegistered, setRegistered } = useOperatorStore();
   const [hasMounted, setHasMounted] = useState(false);
+  const { status } = useSession();
 
   // Hydration safety: ensure we only read persisted store on the client
   useEffect(() => {
@@ -29,11 +31,17 @@ export default function Home() {
         return;
     }
 
+    // Auto-bypass SPLASH to INTAKE if authenticated but NOT registered
+    if (status === 'authenticated' && phase === "SPLASH" && !isRegistered) {
+      setPhase("INTAKE");
+      return;
+    }
+
     // Trigger global navigation access once Sovereign mode starts
     if (phase === "SOVEREIGN" && !isRegistered) {
       setRegistered(true);
     }
-  }, [phase, isRegistered, setRegistered, hasMounted]);
+  }, [phase, isRegistered, setRegistered, hasMounted, status]);
 
   // Prevent hydration mismatch flashes
   if (!hasMounted) return null;
