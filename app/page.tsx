@@ -58,13 +58,35 @@ export default function Home() {
             >
               {/* High-Fidelity Asset Container */}
               <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center z-10 transition-transform duration-700 group-hover:scale-105">
-                <Image 
-                  src="/images/aether-network-logo.png"
-                  alt="Aether Network Core"
-                  fill
-                  className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
-                  priority
-                />
+                {/* Inner Geometry (Pulse) */}
+                <motion.div
+                  className="absolute inset-0 z-10"
+                  animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
+                >
+                  <Image 
+                    src="/images/aether-network-logo-inner-geometry.png"
+                    alt="Aether Network Geometry"
+                    fill
+                    className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
+                    priority
+                  />
+                </motion.div>
+
+                {/* Outer Ouroboros (Spin) */}
+                <motion.div
+                  className="absolute inset-0 z-20"
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 15, ease: "linear", repeat: Infinity }}
+                >
+                  <Image 
+                    src="/images/aether-network-logo-outer-ouroboros.png"
+                    alt="Aether Network Ouroboros"
+                    fill
+                    className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
+                    priority
+                  />
+                </motion.div>
               </div>
               
               {/* Typography & Alignment Line */}
