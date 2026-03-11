@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 import { GlobalNavigation } from "@/components/GlobalNavigation";
 import { Providers } from "@/components/Providers";
 
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-amber-50`}
       >
         <Providers>
           <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-neon-gold/5 to-transparent pointer-events-none" />

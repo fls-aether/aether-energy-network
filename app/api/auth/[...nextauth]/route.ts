@@ -8,6 +8,10 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
+  // @ts-ignore - trustHost is often used by newer Auth.js/NextAuth to bypass specific Vercel host checks
+  trustHost: true,
 });
 
 export { handler as GET, handler as POST };
