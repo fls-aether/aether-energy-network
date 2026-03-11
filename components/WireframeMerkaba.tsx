@@ -12,13 +12,13 @@ interface WireframeMerkabaProps {
 export function WireframeMerkaba({ intensity, isFlattening = false }: WireframeMerkabaProps) {
   const groupRef = useRef<THREE.Group>(null);
   const materialRef1 = useRef<THREE.MeshStandardMaterial>(null);
-  const materialRef2 = useRef<THREE.MeshStandardMaterial>(null);
 
   // Base rotation speed + intensity multiplier
   useFrame((state, delta) => {
     if (groupRef.current && !isFlattening) {
-      groupRef.current.rotation.y += delta * (0.5 + intensity * 5);
-      groupRef.current.rotation.x += delta * (0.2 + intensity * 2);
+      // Kinetic Dampening: Multiply intensity by a much smaller decimal to avoid frantic spinning
+      groupRef.current.rotation.y += delta * (0.2 + intensity * 0.5);
+      groupRef.current.rotation.x += delta * (0.1 + intensity * 0.2);
     }
     
     // Animate glow based on intensity
@@ -30,38 +30,17 @@ export function WireframeMerkaba({ intensity, isFlattening = false }: WireframeM
         0.1
       );
     }
-    if (materialRef2.current) {
-      materialRef2.current.emissiveIntensity = THREE.MathUtils.lerp(
-        materialRef2.current.emissiveIntensity,
-        targetEmissiveIntensity,
-        0.1
-      );
-    }
   });
 
   return (
     <group ref={groupRef}>
-      {/* Upward pointing tetrahedron */}
+      {/* Complex Geometric Torus Knot */}
       <mesh>
-        <tetrahedronGeometry args={[2, 0]} />
+        <torusKnotGeometry args={[1.2, 0.4, 128, 32]} />
         <meshStandardMaterial
           ref={materialRef1}
-          color="#00f0ff"
-          emissive="#00f0ff"
-          emissiveIntensity={0.5}
-          wireframe={true}
-          transparent={true}
-          opacity={isFlattening ? 0 : 1}
-        />
-      </mesh>
-
-      {/* Downward pointing tetrahedron */}
-      <mesh rotation={[Math.PI, 0, 0]}>
-        <tetrahedronGeometry args={[2, 0]} />
-        <meshStandardMaterial
-          ref={materialRef2}
-          color="#00f0ff"
-          emissive="#00f0ff"
+          color="#D4AF37"
+          emissive="#D4AF37"
           emissiveIntensity={0.5}
           wireframe={true}
           transparent={true}

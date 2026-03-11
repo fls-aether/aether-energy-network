@@ -54,7 +54,8 @@ export default function Home() {
           >
             <button 
                onClick={() => setPhase("INTAKE")}
-               className="relative flex flex-col items-center justify-center group cursor-pointer outline-none mt-12 focus:ring-2 focus:ring-neon-gold focus:ring-offset-4 focus:ring-offset-background p-4 rounded-xl"
+               style={{ WebkitTapHighlightColor: 'transparent' }}
+               className="relative flex flex-col items-center justify-center group cursor-pointer outline-none focus:outline-none mt-12 p-4 rounded-xl"
             >
               {/* High-Fidelity Asset Container */}
               <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center z-10 transition-transform duration-700 group-hover:scale-105">

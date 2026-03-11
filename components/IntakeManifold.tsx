@@ -16,6 +16,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
   const [vibrationalKey, setVibrationalKey] = useState("");
   const [tempDate, setTempDate] = useState("");
   const [tempTime, setTempTime] = useState("");
+  const [timePeriod, setTimePeriod] = useState("AM");
   const [spatialCoords, setSpatialCoords] = useState("");
   const [intensity, setIntensity] = useState(0);
 
@@ -51,7 +52,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.toUpperCase().replace(/[^0-9AMP\s:]/g, '');
+    let val = e.target.value.replace(/[^0-9:]/g, '');
     
     // Remove extra colons (keep only the first one)
     const colonIndex = val.indexOf(':');
@@ -66,10 +67,17 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
         val = val.slice(0, 2) + ':' + val.slice(2);
     }
 
-    // Collapse multiple spaces
-    val = val.replace(/\s+/g, ' ');
+    // Auto convert > 12 to PM
+    if (val.length >= 2) {
+      let hours = parseInt(val.slice(0, 2), 10);
+      if (hours > 12) {
+        hours = hours - 12;
+        setTimePeriod("PM");
+        val = hours.toString().padStart(2, '0') + val.slice(2);
+      }
+    }
 
-    setTempTime(val.substring(0, 8)); // Support up to HH:MM AM
+    setTempTime(val.substring(0, 5)); // Support up to HH:MM
   };
 
   const handleSpatialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,11 +92,11 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
 
   // Calculate generic intensity based on input length
   useEffect(() => {
-    const totalLength = vibrationalKey.length + tempDate.length + tempTime.length + spatialCoords.length;
+    const totalLength = vibrationalKey.length + tempDate.length + tempTime.length + timePeriod.length + spatialCoords.length;
     // Cap intensity multiplier at 1
     const newIntensity = Math.min(totalLength / 50, 1);
     setIntensity(newIntensity);
-  }, [vibrationalKey, tempDate, tempTime, spatialCoords]);
+  }, [vibrationalKey, tempDate, tempTime, timePeriod, spatialCoords]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,7 +117,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
       }
       
       // Phase 15 SPA Biometric Calculation
-      const derivedStats = calculateStats(vibrationalKey, tempDate, tempTime, spatialCoords);
+      const derivedStats = calculateStats(vibrationalKey, tempDate, `${tempTime} ${timePeriod}`, spatialCoords);
       setStats(derivedStats);
 
       // Phase 26 Sync-Code Generation
@@ -229,14 +237,24 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
             <label className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
               Temporal Inception (Time)
             </label>
-            <input
-              type="text"
-              value={tempTime}
-              onChange={handleTimeChange}
-              className="w-full bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors"
-              placeholder="HH:MM AM/PM"
-              required
-            />
+            <div className="flex gap-4">
+              <input
+                type="text"
+                value={tempTime}
+                onChange={handleTimeChange}
+                className="flex-1 bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors"
+                placeholder="HH:MM"
+                required
+              />
+              <select
+                value={timePeriod}
+                onChange={(e) => setTimePeriod(e.target.value)}
+                className="w-24 bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors cursor-pointer appearance-none text-center"
+              >
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2 relative z-50">
