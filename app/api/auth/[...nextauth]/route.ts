@@ -10,11 +10,13 @@ if (
   console.error("CRITICAL CONFIG ERROR: NEXT_PUBLIC_GOOGLE_PLACES_API_KEY is bundled into NextAuth server secrets!");
 }
 
+if (!process.env.GOOGLE_CLIENT_ID) console.error("CRITICAL: GOOGLE_CLIENT_ID is missing from environment");
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
   pages: {
