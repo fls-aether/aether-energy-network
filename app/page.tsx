@@ -68,7 +68,7 @@ export default function Home() {
                     src="/images/aether-network-logo-inner-geometry.png"
                     alt="Aether Network Geometry"
                     fill
-                    className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
+                    className="object-contain scale-90 drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
                     priority
                   />
                 </motion.div>
@@ -83,18 +83,18 @@ export default function Home() {
                     src="/images/aether-network-logo-outer-ouroboros.png"
                     alt="Aether Network Ouroboros"
                     fill
-                    className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
+                    className="object-contain scale-110 drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
                     priority
                   />
                 </motion.div>
               </div>
               
               {/* Typography & Alignment Line */}
-              <div className="mt-12 flex flex-col items-center space-y-6 z-10">
-                <span className="text-neon-gold/80 tracking-[0.3em] font-light text-sm md:text-base group-hover:text-neon-gold transition-colors duration-700 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]">
+              <div className="absolute bottom-12 flex flex-col items-center space-y-6 z-10 w-full max-w-md mx-auto">
+                <div className="w-[1px] h-24 bg-gradient-to-t from-amber-500/80 to-transparent group-hover:from-neon-gold transition-colors duration-700" />
+                <span className="text-neon-gold/80 tracking-[0.3em] font-light text-sm md:text-base group-hover:text-neon-gold transition-colors duration-700 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] whitespace-nowrap">
                   TOUCH TO INITIALIZE GRID
                 </span>
-                <div className="w-[1px] h-24 bg-gradient-to-b from-neon-gold/60 to-transparent group-hover:from-neon-gold transition-colors duration-700" />
               </div>
 
               {/* Ambient Backglow */}
