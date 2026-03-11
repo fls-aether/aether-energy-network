@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IntakeManifold } from "@/components/IntakeManifold";
 import { DiagnosticWeld } from "@/components/DiagnosticWeld";
 import { SovereignDashboard } from "@/components/SovereignDashboard";
-import { OuroborosMerkabah } from "@/components/OuroborosMerkabah";
+import Image from "next/image";
 import { useOperatorStore } from "@/lib/store";
 
 type AppPhase = "SPLASH" | "INTAKE" | "DIAGNOSTIC" | "SOVEREIGN";
@@ -50,14 +50,33 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center min-h-screen space-y-8 absolute inset-0 z-50 bg-background"
+            className="flex flex-col items-center justify-center min-h-screen absolute inset-0 z-50 bg-background"
           >
             <button 
                onClick={() => setPhase("INTAKE")}
-               className="relative w-64 h-64 flex items-center justify-center group cursor-pointer outline-none focus:ring-2 focus:ring-neon-gold focus:ring-offset-4 focus:ring-offset-background rounded-full transition-transform duration-700 hover:scale-105"
+               className="relative flex flex-col items-center justify-center group cursor-pointer outline-none mt-12 focus:ring-2 focus:ring-neon-gold focus:ring-offset-4 focus:ring-offset-background p-4 rounded-xl"
             >
-              <OuroborosMerkabah />
-              <div className="absolute inset-0 bg-neon-gold/10 rounded-full blur-[80px] animate-pulse group-hover:bg-neon-gold/30 transition-colors duration-700" />
+              {/* High-Fidelity Asset Container */}
+              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center z-10 transition-transform duration-700 group-hover:scale-105">
+                <Image 
+                  src="/images/aether-network-logo.png"
+                  alt="Aether Network Core"
+                  fill
+                  className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
+                  priority
+                />
+              </div>
+              
+              {/* Typography & Alignment Line */}
+              <div className="mt-12 flex flex-col items-center space-y-6 z-10">
+                <span className="text-neon-gold/80 tracking-[0.3em] font-light text-sm md:text-base group-hover:text-neon-gold transition-colors duration-700 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]">
+                  TOUCH TO INITIALIZE GRID
+                </span>
+                <div className="w-[1px] h-24 bg-gradient-to-b from-neon-gold/60 to-transparent group-hover:from-neon-gold transition-colors duration-700" />
+              </div>
+
+              {/* Ambient Backglow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[120%] bg-neon-gold/5 rounded-full blur-[100px] animate-pulse group-hover:bg-neon-gold/15 transition-colors duration-700 pointer-events-none" />
             </button>
           </motion.div>
         )}
