@@ -7,13 +7,16 @@ import { WireframeMerkaba } from "./WireframeMerkaba";
 import { useOperatorStore } from "@/lib/store";
 import { calculateStats } from "@/lib/calculations";
 import { generateSyncCode } from "@/lib/utils";
+import { useSession, signIn } from "next-auth/react";
 
 interface IntakeManifoldProps {
   onComplete: () => void;
 }
 
 export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
+  const { data: session } = useSession();
   const [vibrationalKey, setVibrationalKey] = useState("");
+  const [emailState, setEmailState] = useState(""); // Kept hidden/in background just in case
   const [tempDate, setTempDate] = useState("");
   const [tempTime, setTempTime] = useState("");
   const [timePeriod, setTimePeriod] = useState("AM");
@@ -34,14 +37,20 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
     "Newcastle upon Tyne, UK",
   ];
 
-  const handleGoogleAuth = () => {
-    setIsAuthenticating(true);
-    setTimeout(() => {
-      setVibrationalKey("Operator Alpha");
-      setIsAuthenticating(false);
+  // Auto-populate from NextAuth Session
+  useEffect(() => {
+    if (session?.user?.name && !vibrationalKey) {
+      setVibrationalKey(session.user.name);
+      if (session.user.email) setEmailState(session.user.email);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-    }, 1000);
+    }
+  }, [session, vibrationalKey]);
+
+  const handleGoogleAuth = async () => {
+    setIsAuthenticating(true);
+    await signIn('google');
+    // We let the page redirect or update session naturally
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

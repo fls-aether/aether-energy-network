@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { GlobalNavigation } from "@/components/GlobalNavigation";
+import { Providers } from "@/components/Providers";
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
@@ -31,11 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-neon-gold/5 to-transparent pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-neon-purple/5 to-transparent pointer-events-none" />
+        <Providers>
+          <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-neon-gold/5 to-transparent pointer-events-none" />
+          <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-neon-purple/5 to-transparent pointer-events-none" />
 
-        {children}
-        <GlobalNavigation />
+          {children}
+          <GlobalNavigation />
+        </Providers>
       </body>
     </html>
   );
