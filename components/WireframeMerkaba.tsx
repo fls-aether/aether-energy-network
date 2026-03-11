@@ -13,12 +13,18 @@ export function WireframeMerkaba({ intensity, isFlattening = false }: WireframeM
   const groupRef = useRef<THREE.Group>(null);
   const materialRef1 = useRef<THREE.MeshStandardMaterial>(null);
 
+  const lastTimeRef = useRef(0);
+
   // Base rotation speed + intensity multiplier
-  useFrame((state, delta) => {
+  useFrame((state) => {
+    const elapsedTime = state.clock.elapsedTime;
+    const customDelta = elapsedTime - lastTimeRef.current;
+    lastTimeRef.current = elapsedTime;
+
     if (groupRef.current && !isFlattening) {
       // Kinetic Dampening: Multiply intensity by a much smaller decimal to avoid frantic spinning
-      groupRef.current.rotation.y += delta * (0.2 + intensity * 0.5);
-      groupRef.current.rotation.x += delta * (0.1 + intensity * 0.2);
+      groupRef.current.rotation.y += customDelta * (0.2 + intensity * 0.5);
+      groupRef.current.rotation.x += customDelta * (0.1 + intensity * 0.2);
     }
     
     // Animate glow based on intensity

@@ -21,17 +21,21 @@ export async function GET(request: Request) {
     )}&key=${apiKey}`;
 
     const response = await fetch(url);
-    const data = await response.json();
+    const rawText = await response.text();
+    console.log('Raw Google Places Response:', rawText);
+    
+    const data = JSON.parse(rawText);
 
     if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
       console.error('Google Places API Error:', data);
+      const errorMessage = data.error_message || 'Failed to fetch predictions from Google Places';
       return NextResponse.json(
-        { error: 'Failed to fetch predictions from Google Places' },
-        { status: 500 }
+        { error: errorMessage },
+        { status: 400 }
       );
     }
 
-    const predictions = data.predictions.map((p: any) => p.description);
+    const predictions = (data.predictions || []).map((p: any) => p.description);
 
     return NextResponse.json({ predictions });
   } catch (error) {

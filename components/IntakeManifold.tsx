@@ -248,10 +248,12 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-mono text-neon-purple uppercase tracking-widest">
+            <label htmlFor="vibrationalKey" className="block text-xs font-mono text-neon-purple uppercase tracking-widest">
               Vibrational Key
             </label>
             <input
+              id="vibrationalKey"
+              name="vibrationalKey"
               type="text"
               value={vibrationalKey}
               onChange={(e) => setVibrationalKey(e.target.value)}
@@ -262,10 +264,12 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
+            <label htmlFor="tempDate" className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
               Temporal Inception (Date)
             </label>
             <input
+              id="tempDate"
+              name="tempDate"
               type="text" // Kept as text per user format request, but could be 'date'
               value={tempDate}
               onChange={handleDateChange}
@@ -276,11 +280,13 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
+            <label htmlFor="tempTime" className="block text-xs font-mono text-neon-amber uppercase tracking-widest">
               Temporal Inception (Time)
             </label>
             <div className="flex gap-4">
               <input
+                id="tempTime"
+                name="tempTime"
                 type="text"
                 value={tempTime}
                 onChange={handleTimeChange}
@@ -289,6 +295,8 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
                 required
               />
               <select
+                id="timePeriod"
+                name="timePeriod"
                 value={timePeriod}
                 onChange={(e) => setTimePeriod(e.target.value)}
                 className="w-24 bg-panel border-b-2 border-neon-amber/30 text-foreground p-3 font-mono text-sm focus:outline-none focus:border-neon-amber transition-colors cursor-pointer appearance-none text-center"
@@ -300,11 +308,13 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
           </div>
 
           <div className="space-y-2 relative z-50">
-            <label className="block text-xs font-mono text-neon-gold uppercase tracking-widest">
+            <label htmlFor="spatialCoords" className="block text-xs font-mono text-neon-gold uppercase tracking-widest">
                Spatial Coordinates
             </label>
             <div className="relative" ref={dropdownRef}>
               <input
+                id="spatialCoords"
+                name="spatialCoords"
                 type="text"
                 value={spatialCoords}
                 onChange={handleSpatialChange}
