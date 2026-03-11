@@ -12,6 +12,9 @@ interface OperatorState {
   stats: TelemetryStats | null;
   setStats: (stats: TelemetryStats) => void;
   
+  operatorDetails: { name: string; date: string; time: string; location: string } | null;
+  setOperatorDetails: (details: { name: string; date: string; time: string; location: string } | null) => void;
+  
   // Phase 26 additions
   syncCode: string | null;
   setSyncCode: (code: string) => void;
@@ -29,6 +32,9 @@ export const useOperatorStore = create<OperatorState>()(
       setAgeData: (age, isAdult) => set({ userAge: age, isAdult }),
       stats: null,
       setStats: (stats) => set({ stats }),
+      
+      operatorDetails: null,
+      setOperatorDetails: (details) => set({ operatorDetails: details }),
       
       syncCode: null,
       setSyncCode: (code) => set({ syncCode: code }),

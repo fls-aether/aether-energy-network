@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 interface LoginGateProps {
   onComplete: () => void;
@@ -39,7 +40,15 @@ export function LoginGate({ onComplete }: LoginGateProps) {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="w-full p-8 md:p-16 z-20 flex flex-col items-center justify-center max-w-md"
       >
-        <div className="mb-10 text-center">
+        <div className="mb-10 text-center flex flex-col items-center">
+          <div className="relative w-24 h-24 mb-4">
+            <Image 
+              src="/images/aether-network-logo3.png" 
+              alt="Aether Network Logo" 
+              fill 
+              className="object-contain"
+            />
+          </div>
           <h1 className="text-3xl font-bold tracking-widest text-neon-gold uppercase mb-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
             Network Access
           </h1>

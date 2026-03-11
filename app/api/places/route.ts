@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   try {
     const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
       input
-    )}&key=${apiKey}`;
+    )}&types=(cities)&key=${apiKey}`;
 
     const response = await fetch(url);
     const rawText = await response.text();

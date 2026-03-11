@@ -30,7 +30,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
   const [placesPredictions, setPlacesPredictions] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { setAgeData, setStats, setSyncCode } = useOperatorStore();
+  const { setAgeData, setStats, setSyncCode, setOperatorDetails } = useOperatorStore();
 
   // Auto-populate from NextAuth Session
   useEffect(() => {
@@ -153,8 +153,18 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
         setAgeData(age, isAdult);
       }
       
+      const fullTime = `${tempTime} ${timePeriod}`;
+
+      // Phase 28: Store raw operator details for Gemini AI API
+      setOperatorDetails({
+        name: vibrationalKey,
+        date: tempDate,
+        time: fullTime,
+        location: spatialCoords
+      });
+
       // Phase 15 SPA Biometric Calculation
-      const derivedStats = calculateStats(vibrationalKey, tempDate, `${tempTime} ${timePeriod}`, spatialCoords);
+      const derivedStats = calculateStats(vibrationalKey, tempDate, fullTime, spatialCoords);
       setStats(derivedStats);
 
       // Phase 26 Sync-Code Generation
