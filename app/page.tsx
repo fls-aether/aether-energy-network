@@ -90,8 +90,8 @@ export default function Home() {
               </div>
               
               {/* Typography & Alignment Line */}
-              <div className="absolute bottom-12 flex flex-col items-center space-y-6 z-10 w-full max-w-md mx-auto">
-                <div className="w-[1px] h-24 bg-gradient-to-t from-amber-500/80 to-transparent group-hover:from-neon-gold transition-colors duration-700" />
+              <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 z-50 w-full max-w-md">
+                <div className="w-[1px] h-16 bg-gradient-to-t from-[#D4AF37]/90 to-transparent group-hover:from-neon-gold transition-colors duration-700" />
                 <span className="text-neon-gold/80 tracking-[0.3em] font-light text-sm md:text-base group-hover:text-neon-gold transition-colors duration-700 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] whitespace-nowrap">
                   TOUCH TO INITIALIZE GRID
                 </span>
