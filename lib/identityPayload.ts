@@ -2,16 +2,25 @@
 
 export const OPERATOR_IDENTITY = {
   metaphysical: {
-    "Numerology Identity": {
+    "Numerology": {
       lifePath: "22 (Master Builder) / Current: 11",
       coreArchetype: "The Flying Mountain",
       mode: "Jupiterian Rat",
       anchor: "9 Star Ki 8-8-2 Triple Earth",
     },
-    "Starseed Identity": {
-      chineseZodiac: "Yin Water Pig (1983)",
+    "Starseed": {
       originPoint: "Adak, Alaska (Birthplace of the Winds)",
       masterSpiritualCourt: "Beleth (Sun/MC), Zagan (ASC)",
+    },
+  },
+  cultural: {
+    "Cultural Systems": {
+      chineseZodiac: "Yin Water Pig (1983)",
+      japanese: "TBD",
+      tzolkin: "TBD",
+      celticTree: "TBD",
+      decans: "TBD",
+      mahabote: "TBD",
     },
   },
   astrological: {
@@ -52,7 +61,7 @@ export const OPERATOR_IDENTITY = {
       Eris: "Aries",
       Hygiea: "Scorpio",
     },
-    "Standard Sidereal Lahiri": {
+    "Sidereal Lahiri": {
       Sun: "Taurus",
       Mars: "Taurus",
       MC: "Taurus",

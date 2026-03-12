@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { OPERATOR_IDENTITY } from "@/lib/identityPayload";
 
 const IDENTITY_SYSTEMS = [
-  "Starseed Identity", 
-  "Numerology Identity", 
+  "Starseed", 
+  "Numerology", 
+  "Cultural Systems",
   "Tropical Placidus", 
-  "Standard Sidereal Lahiri", 
+  "Sidereal Lahiri", 
   "Draconic", 
   "Heliocentric", 
   "Theoretical Axiom"
@@ -29,13 +30,15 @@ const PLACEMENT_GROUPS = {
 function IdentitySummary({ system }: { system: string }) {
   const getSummaryText = (sys: string) => {
     switch (sys) {
-      case "Starseed Identity":
+      case "Starseed":
         return "Translates baseline demographic metadata into overarching systemic resonance alignments across deep-space focal domains.";
-      case "Numerology Identity":
-        return "Decodes the underlying numeric frequencies of assigned designations to output core operational axioms.";
+      case "Numerology":
+        return "The mathematical blueprint of the soul's journey derived from exact birth coordinates.";
+      case "Cultural Systems":
+        return "Earth-grid socio-mythic frameworks mapping localized archetypal alignments.";
       case "Tropical Placidus":
-        return "The standard earthly seasonal framework, plotting chronological natal positions to psychological architectures.";
-      case "Standard Sidereal Lahiri":
+        return "The standard seasonal Earth-grid projection.";
+      case "Sidereal Lahiri":
         return "Calculates alignments based on actual current celestial positioning against the fixed galactic backdrop.";
       case "Draconic":
         return "Recalibrates the chart against the lunar nodes, accessing the deep, undercurrent soul-level mission directives.";
@@ -59,9 +62,11 @@ function IdentitySummary({ system }: { system: string }) {
 }
 
 export default function IdentitiesPage() {
-  const [activeSystem, setActiveSystem] = useState(IDENTITY_SYSTEMS[2]); // Default Tropical Placidus
+  const [activeSystem, setActiveSystem] = useState("Tropical Placidus");
 
-  const isMetaphysical = activeSystem === "Starseed Identity" || activeSystem === "Numerology Identity";
+  const isMetaphysical = activeSystem === "Starseed" || activeSystem === "Numerology";
+  const isCultural = activeSystem === "Cultural Systems";
+  const showZodiacPatterns = ["Tropical Placidus", "Sidereal Lahiri", "Draconic", "Heliocentric", "Theoretical Axiom"].includes(activeSystem);
   
   const getSystemKey = (sys: string) => {
     if (sys === "Tropical Placidus") return "tropical";
@@ -107,49 +112,108 @@ export default function IdentitiesPage() {
 
         {isMetaphysical ? (
            <div className="bg-panel/40 border border-white/5 rounded-lg p-8 space-y-8">
-             {activeSystem === "Numerology Identity" && (
+             {activeSystem === "Numerology" && (
                 <>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Life Path</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology Identity"].lifePath}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].lifePath}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.lifePath22}</p>
                   </div>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Core Archetype</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology Identity"].coreArchetype}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].coreArchetype}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.coreArchetype}</p>
                   </div>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Mode</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology Identity"].mode}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].mode}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.mode}</p>
                   </div>
                   <div>
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Anchor Point</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology Identity"].anchor}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].anchor}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.tripleEarth}</p>
                   </div>
                 </>
              )}
-             {activeSystem === "Starseed Identity" && (
+             {activeSystem === "Starseed" && (
                 <>
                   <div className="border-b border-white/10 pb-4">
-                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Chinese Zodiac</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed Identity"].chineseZodiac}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.chineseZodiac}</p>
-                  </div>
-                  <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Origin Point</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed Identity"].originPoint}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed"].originPoint}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.origin}</p>
                   </div>
                   <div>
                     <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Master Spiritual Court</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed Identity"].masterSpiritualCourt}</p>
+                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed"].masterSpiritualCourt}</p>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.spiritualCourt}</p>
                   </div>
                 </>
              )}
+           </div>
+        ) : isCultural ? (
+           <div className="bg-panel/40 border border-white/5 rounded-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">Chinese Zodiac</h4>
+                <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.cultural?.["Cultural Systems"]?.chineseZodiac || "Yin Water Pig (1983)"}</p>
+                <p className="text-xs text-foreground/50 font-mono">Fluid dynamics engine.</p>
+             </div>
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-rose-400 font-mono tracking-widest uppercase mb-2">Japanese (Kigaku)</h4>
+                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
+                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+             </div>
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-2">Tzolkin</h4>
+                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
+                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+             </div>
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-amber-600 font-mono tracking-widest uppercase mb-2">Celtic Tree</h4>
+                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
+                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+             </div>
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase mb-2">Decans</h4>
+                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
+                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+             </div>
+             <div className="bg-black/30 p-4 rounded border border-white/5">
+                <h4 className="text-[10px] text-orange-400 font-mono tracking-widest uppercase mb-2">Mahabote</h4>
+                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
+                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+             </div>
+           </div>
+        ) : activeSystem === "Theoretical Axiom" ? (
+           <div className="space-y-6">
+             <div className="bg-neon-purple/5 border border-neon-purple/20 rounded p-4 text-center">
+               <p className="text-xs text-neon-purple font-mono uppercase tracking-widest">
+                 Calculated via Cotsworth Plan, UTC, & 13-Sign Ophiuchus logic.
+               </p>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
+                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Tropical Placidus</h4>
+                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+                </div>
+                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
+                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Sidereal Fagan-Bradley Whole</h4>
+                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+                </div>
+                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
+                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Draconic</h4>
+                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+                </div>
+                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
+                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Heliocentric</h4>
+                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+                </div>
+                <div className="bg-panel/40 border border-white/5 rounded-lg p-6 md:col-span-2">
+                  <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-2">Numerology</h4>
+                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+                </div>
+             </div>
            </div>
         ) : (
           <div className="space-y-12">
@@ -184,9 +248,9 @@ export default function IdentitiesPage() {
                          <div className="bg-panel/50 border border-white/5 rounded p-3">
                            <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-2">Orbital Metrics</h4>
                            <ul className="space-y-1 text-xs font-mono tracking-wider text-foreground/60">
-                             <li className="flex justify-between"><span>Degree:</span> <span className="text-white">--° --'</span></li>
-                             <li className="flex justify-between"><span>House:</span> <span className="text-white">--</span></li>
-                             <li className="flex justify-between"><span>Retrograde:</span> <span className="text-white">False</span></li>
+                             <li className="flex justify-between"><span>Degree:</span> <span className="text-white">Syncing...</span></li>
+                             <li className="flex justify-between"><span>House:</span> <span className="text-white">TBD</span></li>
+                             <li className="flex justify-between"><span>Retrograde:</span> <span className="text-white">Syncing...</span></li>
                            </ul>
                          </div>
                       </div>
@@ -199,6 +263,7 @@ export default function IdentitiesPage() {
         )}
 
         {/* Zodiac Patterns Anomaly Section */}
+        {showZodiacPatterns && (
         <section className="mt-16 pt-8 border-t border-white/10">
            <h3 className="text-neon-purple text-xs font-mono tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
              <span className="w-2 h-2 bg-neon-purple rounded-full animate-pulse" />
@@ -210,6 +275,7 @@ export default function IdentitiesPage() {
               </p>
            </div>
         </section>
+        )}
 
       </main>
     </div>
