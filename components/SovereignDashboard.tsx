@@ -7,23 +7,20 @@ import { KineticStatSheet } from "./KineticStatSheet";
 import { GroundingGeometryCanvas } from "./GroundingGeometryCanvas";
 import { WireframeMerkaba } from "./WireframeMerkaba";
 import { useState, useEffect } from "react";
-import { useOperatorStore } from "@/lib/store";
+import { useOperatorStore, TelemetryPayload } from "@/lib/store";
 import { Canvas } from "@react-three/fiber";
-
-interface TelemetryPayload {
-  integrityPercentage: number;
-  kineticOutput: string;
-  kineticSummary: string;
-  epicycle: string;
-  nextFullMoon: string;
-  nextNewMoon: string;
-  cosmicAnomalies: string;
-  dailyAffirmation: string;
-}
 
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const { operatorDetails, telemetry, setTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
+
+  useEffect(() => {
+    // Cache invalidation fallback for Target Alpha upgrade
+    if (telemetry && !telemetry.identitiesMatrix) {
+       console.warn("Outdated Telemetry Schema Detected: Cleared for hydration.");
+       setTelemetry(null);
+    }
+  }, [telemetry, setTelemetry]);
 
   useEffect(() => {
     async function fetchForecast() {

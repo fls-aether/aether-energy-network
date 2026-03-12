@@ -2,6 +2,19 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI, Schema, SchemaType } from '@google/generative-ai';
 
 // Exact JSON schema constraint for the Sovereign Dashboard
+const astrologicalPlacementSchema: Schema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    celestialBody: { type: SchemaType.STRING, description: "Name of the body or point (e.g., Sun, Moon, ASC, NN)." },
+    sign: { type: SchemaType.STRING, description: "Zodiac sign the body resides in." },
+    degree: { type: SchemaType.STRING, description: "Degree notation (e.g., '14° 22\'')." },
+    house: { type: SchemaType.STRING, description: "Astrological house (e.g., '4th')." },
+    isRetrograde: { type: SchemaType.BOOLEAN, description: "True if the body is retrograde." },
+    esotericMeaning: { type: SchemaType.STRING, description: "A 1-sentence synthesis of this placement based on the injected knowledge base." },
+  },
+  required: ["celestialBody", "sign", "degree", "house", "isRetrograde", "esotericMeaning"],
+};
+
 const telemetrySchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -37,6 +50,50 @@ const telemetrySchema: Schema = {
       type: SchemaType.STRING,
       description: "A highly personalized, empowering, daily calibration affirmation based on their specific Life Path and Zodiac.",
     },
+    identitiesMatrix: {
+      type: SchemaType.OBJECT,
+      description: "The full esoteric natal chart calculation mapped across 7 different grid systems.",
+      properties: {
+        tropical: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
+        sidereal: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
+        draconic: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
+        heliocentric: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
+        numerology: {
+           type: SchemaType.OBJECT,
+           properties: {
+              lifePath: { type: SchemaType.STRING },
+              coreArchetype: { type: SchemaType.STRING },
+              mode: { type: SchemaType.STRING },
+              anchor: { type: SchemaType.STRING },
+              systemOverview: { type: SchemaType.STRING },
+           },
+           required: ["lifePath", "coreArchetype", "mode", "anchor", "systemOverview"],
+        },
+        starseed: {
+           type: SchemaType.OBJECT,
+           properties: {
+              originPoint: { type: SchemaType.STRING },
+              masterSpiritualCourt: { type: SchemaType.STRING },
+              systemOverview: { type: SchemaType.STRING },
+           },
+           required: ["originPoint", "masterSpiritualCourt", "systemOverview"],
+        },
+        cultural: {
+           type: SchemaType.OBJECT,
+           properties: {
+              chineseZodiac: { type: SchemaType.STRING },
+              japanese: { type: SchemaType.STRING },
+              tzolkin: { type: SchemaType.STRING },
+              celticTree: { type: SchemaType.STRING },
+              decans: { type: SchemaType.STRING },
+              mahabote: { type: SchemaType.STRING },
+              systemOverview: { type: SchemaType.STRING },
+           },
+           required: ["chineseZodiac", "japanese", "tzolkin", "celticTree", "decans", "mahabote", "systemOverview"],
+        },
+      },
+      required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "cultural"]
+    }
   },
   required: [
     "integrityPercentage", 
@@ -46,7 +103,8 @@ const telemetrySchema: Schema = {
     "nextFullMoon", 
     "nextNewMoon", 
     "cosmicAnomalies", 
-    "dailyAffirmation"
+    "dailyAffirmation",
+    "identitiesMatrix"
   ],
 };
 
@@ -59,6 +117,11 @@ ESOTERIC RULESET & DEFINITIONS:
 3. Numerology Epicycle: Provide the user's current 9-Year Epicycle phase (Personal Year Number = Birth Month + Birth Day + Current Year).
 4. Starseed Archetypes: Map their energy to Starseed origins (Pleiadian, Sirian, Arcturian, Lyran, etc.) based on intuitive celestial alignment.
 5. Sacred Geometry: View their energetic signature through the lens of Merkaba, Torus, Metatron's Cube, or the Seed of Life.
+
+5. Sacred Geometry: View their energetic signature through the lens of Merkaba, Torus, Metatron's Cube, or the Seed of Life.
+
+STRICT CONTEXTUAL ADHERENCE:
+When calculating the identitiesMatrix and generating the \`esotericMeaning\` or \`systemOverview\` strings, you MUST strictly utilize the esoteric definitions and archetypes provided above. Do NOT hallucinate generic astrology. You must synthesize the exact definitions provided in this prompt against the user's calculated coordinates to provide a gritty, mechanical-esoteric analysis.
 
 IMPORTANT TEMPORAL ANCHORING:
 The "current server date and time" acting as your "TODAY" is: ${new Date().toISOString()}
@@ -123,7 +186,16 @@ Analyze this data and generate the JSON telemetry payload.`;
       nextFullMoon: "Pending Telemetry",
       nextNewMoon: "Pending Telemetry",
       cosmicAnomalies: "Signal lost in the noise of the void.",
-      dailyAffirmation: "I trust the process of recalibration. Every static disruption leads to higher fidelity."
+      dailyAffirmation: "I trust the process of recalibration. Every static disruption leads to higher fidelity.",
+      identitiesMatrix: {
+        tropical: [],
+        sidereal: [],
+        draconic: [],
+        heliocentric: [],
+        numerology: { lifePath: "TBD", coreArchetype: "TBD", mode: "TBD", anchor: "TBD", systemOverview: "TBD" },
+        starseed: { originPoint: "TBD", masterSpiritualCourt: "TBD", systemOverview: "TBD" },
+        cultural: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" }
+      }
     };
 
     return NextResponse.json(fallbackData, { status: 500 });

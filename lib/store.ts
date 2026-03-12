@@ -3,6 +3,55 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import { TelemetryStats } from './calculations';
 
+export interface AstrologicalPlacement {
+  celestialBody: string;
+  sign: string;
+  degree: string;
+  house: string;
+  isRetrograde: boolean;
+  esotericMeaning: string;
+}
+
+export interface IdentitiesMatrix {
+  tropical: AstrologicalPlacement[];
+  sidereal: AstrologicalPlacement[];
+  draconic: AstrologicalPlacement[];
+  heliocentric: AstrologicalPlacement[];
+  numerology: {
+    lifePath: string;
+    coreArchetype: string;
+    mode: string;
+    anchor: string;
+    systemOverview: string;
+  };
+  starseed: {
+    originPoint: string;
+    masterSpiritualCourt: string;
+    systemOverview: string;
+  };
+  cultural: {
+    chineseZodiac: string;
+    japanese: string;
+    tzolkin: string;
+    celticTree: string;
+    decans: string;
+    mahabote: string;
+    systemOverview: string;
+  };
+}
+
+export interface TelemetryPayload {
+  integrityPercentage: number;
+  kineticOutput: string;
+  kineticSummary: string;
+  epicycle: string;
+  nextFullMoon: string;
+  nextNewMoon: string;
+  cosmicAnomalies: string;
+  dailyAffirmation: string;
+  identitiesMatrix?: IdentitiesMatrix;
+}
+
 interface OperatorState {
   isRegistered: boolean;
   setRegistered: (status: boolean) => void;
@@ -21,8 +70,8 @@ interface OperatorState {
   confirmedConnections: Array<{ id: string; name: string; timestamp: string }>;
   addConnection: (connection: { id: string; name: string; timestamp: string }) => void;
 
-  telemetry: any;
-  setTelemetry: (data: any) => void;
+  telemetry: TelemetryPayload | null;
+  setTelemetry: (data: TelemetryPayload | null) => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
 }

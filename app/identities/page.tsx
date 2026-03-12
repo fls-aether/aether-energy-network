@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { OPERATOR_IDENTITY } from "@/lib/identityPayload";
+import { useOperatorStore, TelemetryPayload } from "@/lib/store";
 
 const IDENTITY_SYSTEMS = [
   "Starseed", 
@@ -63,6 +63,8 @@ function IdentitySummary({ system }: { system: string }) {
 
 export default function IdentitiesPage() {
   const [activeSystem, setActiveSystem] = useState("Tropical Placidus");
+  const { telemetry } = useOperatorStore();
+  const mtx = telemetry?.identitiesMatrix;
 
   const isMetaphysical = activeSystem === "Starseed" || activeSystem === "Numerology";
   const isCultural = activeSystem === "Cultural Systems";
@@ -70,14 +72,23 @@ export default function IdentitiesPage() {
   
   const getSystemKey = (sys: string) => {
     if (sys === "Tropical Placidus") return "tropical";
+    if (sys === "Sidereal Lahiri") return "sidereal";
     if (sys === "Draconic") return "draconic";
+    if (sys === "Heliocentric") return "heliocentric";
     return null;
   };
 
-  const getInterpretation = (placement: string) => {
+  const getActiveArray = () => {
+    if (!mtx) return [];
     const sysKey = getSystemKey(activeSystem);
-    if (!sysKey) return null;
-    return OPERATOR_IDENTITY.interpretations[sysKey]?.[placement];
+    if (!sysKey) return [];
+    // @ts-ignore - Dynamic key access based on literal mapping
+    return mtx[sysKey] || [];
+  };
+
+  const getPlacementData = (body: string) => {
+    const arr = getActiveArray();
+    return arr.find((p: any) => p.celestialBody === body);
   };
 
   return (
@@ -116,23 +127,19 @@ export default function IdentitiesPage() {
                 <>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Life Path</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].lifePath}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.lifePath22}</p>
+                    <p className="text-sm text-white font-mono mb-2">{mtx?.numerology?.lifePath || "Syncing..."}</p>
                   </div>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Core Archetype</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].coreArchetype}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.coreArchetype}</p>
+                    <p className="text-sm text-white font-mono mb-2">{mtx?.numerology?.coreArchetype || "Syncing..."}</p>
                   </div>
                   <div className="border-b border-white/10 pb-4">
-                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Mode</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].mode}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.mode}</p>
+                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Mode & Anchor Point</h4>
+                    <p className="text-sm text-white font-mono mb-2">{mtx?.numerology?.mode || "Syncing..."} // {mtx?.numerology?.anchor || "TBD"}</p>
                   </div>
                   <div>
-                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Anchor Point</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Numerology"].anchor}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.tripleEarth}</p>
+                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">System Overview</h4>
+                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{mtx?.numerology?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
                   </div>
                 </>
              )}
@@ -140,48 +147,48 @@ export default function IdentitiesPage() {
                 <>
                   <div className="border-b border-white/10 pb-4">
                     <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Origin Point</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed"].originPoint}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.origin}</p>
+                    <p className="text-sm text-white font-mono mb-2">{mtx?.starseed?.originPoint || "Syncing..."}</p>
+                  </div>
+                  <div className="border-b border-white/10 pb-4">
+                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Master Spiritual Court</h4>
+                    <p className="text-sm text-white font-mono mb-2">{mtx?.starseed?.masterSpiritualCourt || "Syncing..."}</p>
                   </div>
                   <div>
-                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Master Spiritual Court</h4>
-                    <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.metaphysical["Starseed"].masterSpiritualCourt}</p>
-                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{OPERATOR_IDENTITY.interpretations.metaphysical.spiritualCourt}</p>
+                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">System Overview</h4>
+                    <p className="text-xs text-foreground/70 font-mono leading-relaxed">{mtx?.starseed?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
                   </div>
                 </>
              )}
            </div>
         ) : isCultural ? (
            <div className="bg-panel/40 border border-white/5 rounded-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="bg-black/30 p-4 rounded border border-white/5 md:col-span-2">
+                <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">System Overview</h4>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
+             </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">Chinese Zodiac</h4>
-                <p className="text-sm text-white font-mono mb-2">{OPERATOR_IDENTITY.cultural?.["Cultural Systems"]?.chineseZodiac || "Yin Water Pig (1983)"}</p>
-                <p className="text-xs text-foreground/50 font-mono">Fluid dynamics engine.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.chineseZodiac || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-rose-400 font-mono tracking-widest uppercase mb-2">Japanese (Kigaku)</h4>
-                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
-                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.japanese || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-2">Tzolkin</h4>
-                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
-                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.tzolkin || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-amber-600 font-mono tracking-widest uppercase mb-2">Celtic Tree</h4>
-                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
-                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.celticTree || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase mb-2">Decans</h4>
-                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
-                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.decans || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-orange-400 font-mono tracking-widest uppercase mb-2">Mahabote</h4>
-                <p className="text-sm text-white font-mono mb-2 opacity-50">Syncing...</p>
-                <p className="text-xs text-foreground/50 font-mono">Awaiting grid sync.</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.mahabote || "Syncing..."}</p>
              </div>
            </div>
         ) : activeSystem === "Theoretical Axiom" ? (
@@ -223,7 +230,10 @@ export default function IdentitiesPage() {
                   {groupName}
                 </h3>
                 <div className="space-y-3">
-                  {placements.map(placement => (
+                  {placements.map(placement => {
+                    const data = getPlacementData(placement);
+                    
+                    return (
                     <details 
                        key={placement}
                        className="group bg-panel/30 border border-white/5 rounded transition-all duration-300"
@@ -232,7 +242,11 @@ export default function IdentitiesPage() {
                          <div className="flex gap-4 items-center">
                             <span className="text-neon-gold group-open:rotate-90 transition-transform duration-300 font-mono">▸</span>
                             <span className="text-sm font-mono tracking-wider text-white">
-                              {placement} <span className="text-foreground/40 ml-2">: {OPERATOR_IDENTITY.astrological[activeSystem]?.[placement] || "Void"}</span>
+                              {placement} 
+                              <span className="text-foreground/40 ml-2">
+                                : {data?.sign || "Void"}
+                                {data?.isRetrograde && <span className="text-neon-amber text-[10px] ml-2 animate-pulse">[Rx]</span>}
+                              </span>
                             </span>
                          </div>
                       </summary>
@@ -241,21 +255,22 @@ export default function IdentitiesPage() {
                          <div>
                            <h4 className="text-[10px] text-foreground/40 font-mono tracking-widest uppercase mb-1">Synthesized Meaning</h4>
                            <p className="text-xs text-foreground/80 font-mono leading-relaxed">
-                             {getInterpretation(placement) || `Awaiting deep-space telemetry to decode the specific esoteric significance of ${placement} within the ${activeSystem} layer. Current resonance points to latent potential.`}
+                             {data?.esotericMeaning || `Awaiting deep-space telemetry to decode the specific esoteric significance of ${placement} within the ${activeSystem} layer. Current resonance points to latent potential.`}
                            </p>
                          </div>
                          
                          <div className="bg-panel/50 border border-white/5 rounded p-3">
                            <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-2">Orbital Metrics</h4>
                            <ul className="space-y-1 text-xs font-mono tracking-wider text-foreground/60">
-                             <li className="flex justify-between"><span>Degree:</span> <span className="text-white">Syncing...</span></li>
-                             <li className="flex justify-between"><span>House:</span> <span className="text-white">TBD</span></li>
-                             <li className="flex justify-between"><span>Retrograde:</span> <span className="text-white">Syncing...</span></li>
+                             <li className="flex justify-between"><span>Degree:</span> <span className="text-white">{data?.degree || "Syncing..."}</span></li>
+                             <li className="flex justify-between"><span>House:</span> <span className="text-white">{data?.house || "TBD"}</span></li>
+                             <li className="flex justify-between"><span>Retrograde:</span> <span className="text-white">{data?.isRetrograde ? "True" : data ? "False" : "Syncing..."}</span></li>
                            </ul>
                          </div>
                       </div>
                     </details>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             ))}
