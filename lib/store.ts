@@ -20,6 +20,11 @@ interface OperatorState {
   setSyncCode: (code: string) => void;
   confirmedConnections: Array<{ id: string; name: string; timestamp: string }>;
   addConnection: (connection: { id: string; name: string; timestamp: string }) => void;
+
+  telemetry: any;
+  setTelemetry: (data: any) => void;
+  telemetryLastUpdated: number | null;
+  setTelemetryLastUpdated: (timestamp: number) => void;
 }
 
 export const useOperatorStore = create<OperatorState>()(
@@ -40,13 +45,15 @@ export const useOperatorStore = create<OperatorState>()(
       setSyncCode: (code) => set({ syncCode: code }),
       
       // Mock Data initialized for Phase 26
-      confirmedConnections: [
-        { id: "mock-ext-1", name: "Astrid Pookie", timestamp: new Date().toISOString() },
-        { id: "mock-ext-2", name: "Manz", timestamp: new Date().toISOString() }
-      ],
+      confirmedConnections: [],
       addConnection: (connection) => set((state) => ({
         confirmedConnections: [...state.confirmedConnections, connection]
       })),
+
+      telemetry: null,
+      setTelemetry: (data) => set({ telemetry: data }),
+      telemetryLastUpdated: null,
+      setTelemetryLastUpdated: (timestamp) => set({ telemetryLastUpdated: timestamp }),
     }),
     {
       name: 'aether-energy-storage', // Key in localStorage

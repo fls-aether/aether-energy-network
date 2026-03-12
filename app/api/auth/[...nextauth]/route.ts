@@ -24,7 +24,7 @@ const handler = NextAuth({
     error: '/',  // Redirects back home on error so we can see the UI
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
+  debug: false,
   // @ts-ignore - trustHost is often used by newer Auth.js/NextAuth to bypass specific Vercel host checks
   trustHost: true,
 });

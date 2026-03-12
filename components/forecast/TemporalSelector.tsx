@@ -24,7 +24,7 @@ export function TemporalSelector({ selectedVector, onSelect }: TemporalSelectorP
               key={key}
               onClick={() => onSelect(key)}
               className={`relative px-6 py-2 rounded-full text-xs font-mono uppercase tracking-widest transition-all duration-300
-                ${isActive ? 'text-black font-bold' : 'text-foreground/70 hover:text-white'}`}
+                ${isActive ? 'text-cyan-400 font-bold' : 'text-foreground/70 hover:text-white'}`}
             >
               {isActive && (
                 <motion.div

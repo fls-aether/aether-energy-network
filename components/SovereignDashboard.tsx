@@ -23,13 +23,20 @@ interface TelemetryPayload {
 
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-  const [telemetry, setTelemetry] = useState<TelemetryPayload | null>(null);
-
-  const { operatorDetails } = useOperatorStore();
+  const { operatorDetails, telemetry, setTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
 
   useEffect(() => {
     async function fetchForecast() {
       if (!operatorDetails) return;
+
+      const today = new Date().toLocaleDateString();
+      if (telemetry && telemetryLastUpdated) {
+        const lastUpdatedDate = new Date(telemetryLastUpdated).toLocaleDateString();
+        if (lastUpdatedDate === today) {
+          return; // Bypass API fetch
+        }
+      }
+
       try {
         const res = await fetch("/api/forecast", {
           method: "POST",
@@ -42,12 +49,15 @@ export function SovereignDashboard() {
         });
         const data = await res.json();
         setTelemetry(data);
+        setTelemetryLastUpdated(Date.now());
       } catch (e) {
         console.error("Forecast hydration failed:", e);
       }
     }
     fetchForecast();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operatorDetails]);
+
 
   // Mock data for Phase 3 visual demonstration
   const stats = [

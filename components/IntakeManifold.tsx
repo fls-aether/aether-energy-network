@@ -114,6 +114,10 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
     }
 
     setTempTime(val.substring(0, 5)); // Support up to HH:MM
+
+    if (val.length >= 5 && tempTime.length < 5) {
+      document.getElementById('timePeriod')?.focus();
+    }
   };
 
   const handleSpatialChange = (e: React.ChangeEvent<HTMLInputElement>) => {

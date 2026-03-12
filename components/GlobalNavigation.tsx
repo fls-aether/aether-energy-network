@@ -7,7 +7,7 @@ import { useOperatorStore } from "@/lib/store";
 
 export function GlobalNavigation() {
   const pathname = usePathname();
-  const { isRegistered } = useOperatorStore();
+  const { isRegistered, telemetry } = useOperatorStore();
 
   const links = [
     { href: "/", label: "Radar", icon: "❖" },
@@ -16,8 +16,7 @@ export function GlobalNavigation() {
     { href: "/connections", label: "Connections", icon: "⎈" },
     { href: "/story", label: "Story", icon: "⚔️" },
   ];
-
-  if (!isRegistered) return null;
+  if (!isRegistered || !telemetry) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto w-[95%] md:w-auto">
