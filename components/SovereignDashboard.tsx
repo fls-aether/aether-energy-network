@@ -12,15 +12,15 @@ import { Canvas } from "@react-three/fiber";
 
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-  const { operatorDetails, telemetry, setTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
+  const { operatorDetails, telemetry, setGlobalTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
 
   useEffect(() => {
     // Cache invalidation fallback for Target Alpha upgrade
     if (telemetry && !telemetry.identitiesMatrix) {
        console.warn("Outdated Telemetry Schema Detected: Cleared for hydration.");
-       setTelemetry(null);
+       setGlobalTelemetry(null as unknown as TelemetryPayload);
     }
-  }, [telemetry, setTelemetry]);
+  }, [telemetry, setGlobalTelemetry]);
 
   useEffect(() => {
     async function fetchForecast() {
@@ -45,7 +45,7 @@ export function SovereignDashboard() {
           }),
         });
         const data = await res.json();
-        setTelemetry(data);
+        setGlobalTelemetry(data);
         setTelemetryLastUpdated(Date.now());
       } catch (e) {
         console.error("Forecast hydration failed:", e);

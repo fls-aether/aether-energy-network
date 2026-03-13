@@ -1,6 +1,6 @@
-"use client";
-
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { useOperatorStore } from "@/lib/store";
 
 interface CharacterGalleryProps {
   operatorClass?: string;
@@ -8,7 +8,46 @@ interface CharacterGalleryProps {
 }
 
 export function CharacterGallery({ operatorClass, classDescription }: CharacterGalleryProps) {
+  const { telemetry, setOperatorAvatar } = useOperatorStore();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
   const isLoading = !operatorClass;
+  const avatar = telemetry?.operatorAvatar;
+
+  const handleGenerateAvatar = async () => {
+    if (!operatorClass) return;
+    setIsGenerating(true);
+    setGenerationError(null);
+
+    // Naive dominant sign extraction - default to sun sign if available, else first HW
+    const dominantSign = telemetry?.identitiesMatrix?.tropical?.find(p => p.celestialBody === "Sun")?.sign 
+       || "Raw Aether";
+
+    try {
+      const res = await fetch("/api/avatar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operatorClass, dominantSign })
+      });
+
+      if (!res.ok) {
+         throw new Error("Failed to synthesize insignia.");
+      }
+
+      const data = await res.json();
+      if (data.avatarBase64) {
+         setOperatorAvatar(data.avatarBase64);
+      } else {
+         throw new Error("Invalid output format.");
+      }
+    } catch (err) {
+      console.error(err);
+      setGenerationError("Synthesis failed. Displaying local Merkaba.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="w-full mt-12">
@@ -39,16 +78,23 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
              className={`group relative h-[450px] rounded-lg overflow-hidden border border-neon-cyan/50 bg-black/60 shadow-[0_0_30px_rgba(0,255,255,0.1)]`}
            >
              {/* Base "Pin-up" Placeholder Image Container */}
-             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
              
-             {/* A placeholder for the actual high-fidelity art */}
-             <div 
-                 className="absolute inset-0 opacity-60 mix-blend-screen"
-                 style={{
-                    background: `radial-gradient(circle at 50% 30%, rgba(0,255,255,0.2) 0%, transparent 60%)`,
-                    backgroundImage: `url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')`
-                 }}
-             />
+             {/* Actual Avatar Rendering or Fallback */}
+             {avatar ? (
+                <div 
+                   className="absolute inset-0 opacity-80 mix-blend-screen bg-cover bg-center transition-transform duration-[20s] group-hover:scale-110"
+                   style={{ backgroundImage: `url(${avatar})` }}
+                />
+             ) : (
+                <div 
+                   className="absolute inset-0 opacity-60 mix-blend-screen"
+                   style={{
+                      background: `radial-gradient(circle at 50% 30%, rgba(0,255,255,0.2) 0%, transparent 60%)`,
+                      backgroundImage: `url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')`
+                   }}
+                />
+             )}
 
              {/* Glowing Border effect on hover */}
              <div 
@@ -68,9 +114,36 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
                 <h3 className={`text-2xl md:text-3xl font-bold tracking-wider text-white mb-3 drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]`}>
                   {operatorClass}
                 </h3>
-                <p className="text-white/80 font-mono text-xs leading-relaxed">
+                <p className="text-white/80 font-mono text-xs leading-relaxed mb-6">
                   {classDescription}
                 </p>
+
+                {/* Avatar Generation Controls */}
+                {!avatar && (
+                   <div className="mt-4 border-t border-cyan-900/50 pt-4 flex flex-col items-center justify-center">
+                     {isGenerating ? (
+                        <div className="font-mono text-cyan-400 text-xs animate-pulse tracking-widest uppercase">
+                           Synthesizing sacred geometry...
+                        </div>
+                     ) : (
+                        <button 
+                           onClick={handleGenerateAvatar}
+                           className="w-full py-3 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/50 rounded text-cyan-300 font-mono text-xs uppercase tracking-widest transition-all hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] relative overflow-hidden group/btn"
+                        >
+                           <span className="relative z-10 font-bold drop-shadow-[0_0_5px_rgba(0,255,255,0.8)] animate-pulse">
+                              [ Manifest Sovereign Insignia ]
+                           </span>
+                           {/* Button hover flare */}
+                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
+                        </button>
+                     )}
+                     {generationError && (
+                        <div className="text-[10px] font-mono text-red-400 mt-2 text-center">
+                           {generationError}
+                        </div>
+                     )}
+                   </div>
+                )}
              </div>
            </motion.div>
         )}

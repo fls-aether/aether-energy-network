@@ -81,6 +81,7 @@ export interface TelemetryPayload {
   identitiesMatrix?: IdentitiesMatrix;
   temporalForecast?: TemporalForecast;
   aetherealCodex?: AetherealCodex;
+  operatorAvatar?: string;
 }
 
 interface OperatorState {
@@ -102,7 +103,9 @@ interface OperatorState {
   addConnection: (connection: { id: string; name: string; timestamp: string }) => void;
 
   telemetry: TelemetryPayload | null;
-  setTelemetry: (data: TelemetryPayload | null) => void;
+  setGlobalTelemetry: (payload: TelemetryPayload) => void;
+  setOperatorAvatar: (avatarData: string) => void;
+  resetTelemetry: () => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
 }
@@ -131,7 +134,22 @@ export const useOperatorStore = create<OperatorState>()(
       })),
 
       telemetry: null,
-      setTelemetry: (data) => set({ telemetry: data }),
+      setGlobalTelemetry: (payload) => set({ telemetry: payload }),
+      
+      setOperatorAvatar: (avatarData) => set((state) => ({
+        telemetry: state.telemetry 
+          ? { ...state.telemetry, operatorAvatar: avatarData }
+          : null // Changed from undefined to null to match telemetry type
+      })),
+
+      resetTelemetry: () => set({ 
+        // Assuming 'identity', 'activeSystem' are properties that might be added later,
+        // for now, only resetting telemetry and stats as per context.
+        // identity: null, 
+        telemetry: null, 
+        stats: null, 
+        // activeSystem: "Tropical Placidus" 
+      }),
       telemetryLastUpdated: null,
       setTelemetryLastUpdated: (timestamp) => set({ telemetryLastUpdated: timestamp }),
     }),
