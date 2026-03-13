@@ -54,6 +54,21 @@ export interface TemporalForecast {
   thisYear: TemporalForecastBlock;
 }
 
+export interface BiometricIntegrity {
+  logic: number;
+  drive: number;
+  empathy: number;
+  stability: number;
+}
+
+export interface AetherealCodex {
+  biometricIntegrity: BiometricIntegrity;
+  operatorClass: string;
+  classDescription: string;
+  codexLore: string;
+  systemInsight: string;
+}
+
 export interface TelemetryPayload {
   integrityPercentage: number;
   kineticOutput: string;
@@ -65,6 +80,7 @@ export interface TelemetryPayload {
   dailyAffirmation: string;
   identitiesMatrix?: IdentitiesMatrix;
   temporalForecast?: TemporalForecast;
+  aetherealCodex?: AetherealCodex;
 }
 
 interface OperatorState {

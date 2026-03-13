@@ -51,7 +51,7 @@ export function CharacterStatSheet({ stats }: CharacterStatSheetProps) {
                         cx="50"
                         cy="50"
                         r={radius}
-                        className="fill-transparent"
+                        className="fill-transparent transition-all duration-1000 ease-out"
                         strokeWidth="4"
                         stroke={stat.strokeColor}
                         strokeDasharray={circumference}

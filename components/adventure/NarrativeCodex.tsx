@@ -9,10 +9,11 @@ export interface CodexEntry {
 }
 
 interface NarrativeCodexProps {
-  logs: CodexEntry[] | null;
+  codexLore?: string;
+  systemInsight?: string;
 }
 
-export function NarrativeCodex({ logs }: NarrativeCodexProps) {
+export function NarrativeCodex({ codexLore, systemInsight }: NarrativeCodexProps) {
   return (
     <div className="w-full bg-neon-amber/5 border-2 border-neon-amber/20 rounded-sm p-6 relative overflow-hidden h-[400px] flex flex-col shadow-[inset_0_0_40px_rgba(255,170,0,0.05)]">
       
@@ -32,21 +33,23 @@ export function NarrativeCodex({ logs }: NarrativeCodexProps) {
 
       {/* Scrollable Text Area */}
       <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar relative z-10 space-y-4">
-        {logs ? (
-          logs.map((log, i) => (
-             <motion.div 
-                key={log.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="pl-4 border-l border-neon-amber/40"
-             >
-                <div className="text-[10px] font-mono text-neon-amber/60 mb-1 tracking-wider">[{log.timestamp}]</div>
-                <div className="text-sm font-mono text-neon-amber/90 leading-relaxed tracking-wide shadow-sm whitespace-pre-wrap">
-                    {log.text}
+        {codexLore ? (
+           <motion.div 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="pl-4 border-l border-neon-amber/40"
+           >
+              {systemInsight && (
+                <div className="text-[10px] font-mono text-neon-amber/80 bg-neon-amber/10 p-2 rounded mb-4 tracking-wider border border-neon-amber/20">
+                  <span className="font-bold text-neon-amber drop-shadow-[0_0_5px_rgba(255,170,0,0.8)]">SYSTEM INSIGHT:</span> {systemInsight}
                 </div>
-             </motion.div>
-          ))
+              )}
+              
+              <div className="text-sm font-mono text-neon-amber/90 leading-relaxed tracking-wide shadow-sm whitespace-pre-wrap">
+                  {codexLore}
+              </div>
+           </motion.div>
         ) : (
           // Skeletal Loading Lines
           <div className="space-y-6">

@@ -26,6 +26,27 @@ const temporalForecastBlockSchema: Schema = {
   required: ["transitTitle", "energyStatus", "primaryDirective", "secondaryDirective"],
 };
 
+const aetherealCodexSchema: Schema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    biometricIntegrity: {
+      type: SchemaType.OBJECT,
+      properties: {
+        logic: { type: SchemaType.INTEGER, description: "Air/Mental elemental balance (0-100)" },
+        drive: { type: SchemaType.INTEGER, description: "Fire/Volition elemental balance (0-100)" },
+        empathy: { type: SchemaType.INTEGER, description: "Water/Emotional elemental balance (0-100)" },
+        stability: { type: SchemaType.INTEGER, description: "Earth/Physical elemental balance (0-100)" },
+      },
+      required: ["logic", "drive", "empathy", "stability"],
+    },
+    operatorClass: { type: SchemaType.STRING, description: "Derived RPG class (e.g., 'Sylvan Weaver', 'Cyber-Paladin')." },
+    classDescription: { type: SchemaType.STRING, description: "1-2 sentences explaining the class." },
+    codexLore: { type: SchemaType.STRING, description: "A 2-paragraph RPG-style lore drop integrating their signs into a sci-fi narrative." },
+    systemInsight: { type: SchemaType.STRING, description: "System diagnostic note (e.g., '+2 Drive for maintaining vital core function.')." },
+  },
+  required: ["biometricIntegrity", "operatorClass", "classDescription", "codexLore", "systemInsight"],
+};
+
 const telemetrySchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -115,7 +136,8 @@ const telemetrySchema: Schema = {
         thisYear: temporalForecastBlockSchema,
       },
       required: ["today", "thisWeek", "thisMonth", "thisYear"]
-    }
+    },
+    aetherealCodex: aetherealCodexSchema
   },
   required: [
     "integrityPercentage", 
@@ -127,7 +149,8 @@ const telemetrySchema: Schema = {
     "cosmicAnomalies", 
     "dailyAffirmation",
     "identitiesMatrix",
-    "temporalForecast"
+    "temporalForecast",
+    "aetherealCodex"
   ],
 };
 
@@ -150,6 +173,14 @@ Target Beta System Override (temporalForecast):
 Generate a highly personalized tactical forecast spanning today, thisWeek, thisMonth, thisYear.
 You MUST calculate actual, prevailing cosmic transits happening relative to the precise current date and overlay them onto the operator's chart and Numerological epicycle. 
 Name the transits exactly (e.g., "Pluto closely aspecting Natal Mars", "Numerological Year 7 Phase"), but contextualize them through the gritty, sci-fi/technological lens of the Aether Network (e.g., "Subconscious system overhaul", "Operator core processing bandwidth limited"). Provide clear, action-oriented directives for mitigating systemic friction or harnessing kinetic output. Note: maintain the mechanical-mystic aesthetic without breaking character.
+
+Target Gamma System Override (aetherealCodex):
+Generate an RPG-style character sheet payload for the user based strictly on their provided astrological chart.
+1. biometricIntegrity: Analyze their chart's elemental balance (Fire = Drive, Water = Empathy, Air = Logic, Earth = Stability) and generate strict integers from 0 to 100 representing these stats. 
+2. operatorClass: Synthesize a cyber-mystic RPG class (e.g. "Void Weaver", "Solar Paladin", "Lunar Rogue") matching their chart.
+3. classDescription: Provide a 1-2 sentence description of their unique operational capabilities.
+4. codexLore: Write EXACTLY 2 paragraphs of thrilling, cyberpunk/metaphysical narrative mission lore detailing the operator's current active deployment in the Aether Network, weaving in their zodiac signs as literal technological or mystical hardware.
+5. systemInsight: A punchy status update mimicking a system log (e.g. "+15 to Logic due to active Mercury uplink. Caution: Emotional circuits bypassed.").
 
 IMPORTANT TEMPORAL ANCHORING:
 The "current server date and time" acting as your "TODAY" is: ${new Date().toISOString()}
@@ -229,6 +260,13 @@ Analyze this data and generate the JSON telemetry payload.`;
         thisWeek: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
         thisMonth: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
         thisYear: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
+      },
+      aetherealCodex: {
+        biometricIntegrity: { logic: 50, drive: 50, empathy: 50, stability: 50 },
+        operatorClass: "Syncing Operator Model",
+        classDescription: "Awaiting astrological telemetry for baseline class allocation.",
+        codexLore: "The Oracle is currently parsing deep-space telemetry. Standby for narrative synthesis.",
+        systemInsight: "System Insight: Connection interrupted. Engaging localized diagnostics."
       }
     };
 

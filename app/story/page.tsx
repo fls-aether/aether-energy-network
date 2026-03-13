@@ -2,60 +2,32 @@
 
 import { useState, useEffect } from "react";
 import { CharacterStatSheet, CharacterStat } from "@/components/adventure/CharacterStatSheet";
-import { NarrativeCodex, CodexEntry } from "@/components/adventure/NarrativeCodex";
+import { NarrativeCodex } from "@/components/adventure/NarrativeCodex";
 import { CharacterGallery } from "@/components/adventure/CharacterGallery";
 import { MaturityLockedView } from "@/components/adventure/MaturityLockedView";
 import { motion } from "framer-motion";
 import { useOperatorStore } from "@/lib/store";
-import { OPERATOR_IDENTITY } from "@/lib/identityPayload";
 
 export default function AdventurePortal() {
-  const { isAdult, stats: storeStats } = useOperatorStore();
+  const { isAdult, stats: storeStats, telemetry } = useOperatorStore();
   const [stats, setStats] = useState<CharacterStat[] | null>(null);
-  const [logs, setLogs] = useState<CodexEntry[] | null>(null);
 
-  // Setup live stats on mount if they exist in the store
+  const activeCodex = telemetry?.aetherealCodex;
+
+  // Setup live stats on mount based on generated RPG integers, falling back to calibration slider defaults
   useEffect(() => {
-    if (storeStats) {
-       setStats([
-          { id: "logic", label: "Logic", value: storeStats.logic, colorClass: "text-neon-gold", strokeColor: "#ffd700" },
-          { id: "drive", label: "Drive", value: storeStats.drive, colorClass: "text-neon-purple", strokeColor: "#9d00ff" },
-          { id: "empathy", label: "Empathy", value: storeStats.empathy, colorClass: "text-neon-green", strokeColor: "#00ffaa" },
-          { id: "stability", label: "Stability", value: storeStats.stability, colorClass: "text-neon-amber", strokeColor: "#ffaa00" },
-       ]);
-    }
-  }, [storeStats]);
+    const liveLogic = activeCodex?.biometricIntegrity?.logic ?? storeStats?.logic ?? 50;
+    const liveDrive = activeCodex?.biometricIntegrity?.drive ?? storeStats?.drive ?? 50;
+    const liveEmpathy = activeCodex?.biometricIntegrity?.empathy ?? storeStats?.empathy ?? 50;
+    const liveStability = activeCodex?.biometricIntegrity?.stability ?? storeStats?.stability ?? 50;
 
-  // Hydration Pipeline - Phase 25 Live AI Integraton (Logs)
-  useEffect(() => {
-    const fetchAdventureData = async () => {
-      try {
-         const res = await fetch('/api/aether', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-               stats: storeStats,
-               hardware: OPERATOR_IDENTITY.astrological.Draconic,
-               source: "story"
-            }),
-         });
-         const data = await res.json();
-         // Initialize as an array with the single Log object returned
-         setLogs([data.adventureLog]);
-      } catch (error) {
-         console.error("Failed to hydrate adventure logs:", error);
-         setLogs([{
-            id: `error-${Date.now()}`,
-            timestamp: new Date().toLocaleTimeString('en-US', { hour12: false }),
-            text: "[Local Error] Failed to connect to Oracle Relay."
-         }]);
-      }
-    };
-
-    if (storeStats) {
-       fetchAdventureData();
-    }
-  }, [storeStats]);
+    setStats([
+      { id: "logic", label: "Logic", value: liveLogic, colorClass: "text-neon-gold", strokeColor: "#ffd700" },
+      { id: "drive", label: "Drive", value: liveDrive, colorClass: "text-neon-purple", strokeColor: "#9d00ff" },
+      { id: "empathy", label: "Empathy", value: liveEmpathy, colorClass: "text-neon-green", strokeColor: "#00ffaa" },
+      { id: "stability", label: "Stability", value: liveStability, colorClass: "text-neon-amber", strokeColor: "#ffaa00" },
+    ]);
+  }, [storeStats, activeCodex]);
 
   return (
     <div className="min-h-screen w-full bg-background pt-12 pb-40 px-4 md:px-8 relative overflow-hidden flex justify-center">
@@ -96,7 +68,7 @@ export default function AdventurePortal() {
            animate={{ opacity: 1, x: 0 }}
            transition={{ delay: 0.4 }}
         >
-            <NarrativeCodex logs={logs} />
+            <NarrativeCodex codexLore={activeCodex?.codexLore} systemInsight={activeCodex?.systemInsight} />
         </motion.section>
 
         {/* Maturity Gated Character Gallery */}
@@ -105,7 +77,12 @@ export default function AdventurePortal() {
            animate={{ opacity: 1, y: 0 }}
            transition={{ delay: 0.6 }}
         >
-            {isAdult ? <CharacterGallery /> : <MaturityLockedView />}
+            {isAdult ? (
+               <CharacterGallery 
+                 operatorClass={activeCodex?.operatorClass} 
+                 classDescription={activeCodex?.classDescription} 
+               />
+            ) : <MaturityLockedView />}
         </motion.section>
 
       </main>
