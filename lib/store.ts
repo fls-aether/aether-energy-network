@@ -38,6 +38,11 @@ export interface IdentitiesMatrix {
     mahabote: string;
     systemOverview: string;
   };
+  theoreticalAxiom: {
+    thirteenSignZodiac: string;
+    cotsworthDate: string;
+    axiomInsight: string;
+  };
 }
 
 export interface TemporalForecastBlock {

@@ -123,8 +123,17 @@ const telemetrySchema: Schema = {
            },
            required: ["chineseZodiac", "japanese", "tzolkin", "celticTree", "decans", "mahabote", "systemOverview"],
         },
+        theoreticalAxiom: {
+           type: SchemaType.OBJECT,
+           properties: {
+              thirteenSignZodiac: { type: SchemaType.STRING },
+              cotsworthDate: { type: SchemaType.STRING },
+              axiomInsight: { type: SchemaType.STRING },
+           },
+           required: ["thirteenSignZodiac", "cotsworthDate", "axiomInsight"],
+        },
       },
-      required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "culturalSystems"]
+      required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "culturalSystems", "theoreticalAxiom"]
     },
     temporalForecast: {
       type: SchemaType.OBJECT,
@@ -166,6 +175,7 @@ ESOTERIC RULESET & DEFINITIONS:
 
 5. Sacred Geometry: View their energetic signature through the lens of Merkaba, Torus, Metatron's Cube, or the Seed of Life.
 6. Cultural Systems: Calculate the user's Japanese Nine Star Ki/Zodiac, Mayan Tzolkin Kin, Celtic Tree astrology sign, Egyptian/Chaldean Decan of their Tropical Sun, and Burmese Mahabote sign based on their exact birth date and time. Output these as precise, formatted strings.
+7. Theoretical Axiom: Calculate the user's Sun sign using the true astronomical boundaries of the 13 constellations (including Ophiuchus). Also, calculate the user's birth date using the International Fixed Calendar (Cotsworth plan: 13 months of exactly 28 days, with the extra month 'Sol' inserted between June and July). Calculate the Cotsworth date and 13-Sign Zodiac to the absolute best of your mathematical ability based on the provided birth date. Prioritize formatting the output exactly as requested even if the astronomical date conversion requires approximation.
 
 STRICT CONTEXTUAL ADHERENCE:
 When calculating the identitiesMatrix and generating the \`esotericMeaning\` or \`systemOverview\` strings, you MUST strictly utilize the esoteric definitions and archetypes provided above. Do NOT hallucinate generic astrology. You must synthesize the exact definitions provided in this prompt against the user's calculated coordinates to provide a gritty, mechanical-esoteric analysis.
@@ -254,7 +264,8 @@ Analyze this data and generate the JSON telemetry payload.`;
         heliocentric: [],
         numerology: { lifePath: "TBD", coreArchetype: "TBD", mode: "TBD", anchor: "TBD", systemOverview: "TBD" },
         starseed: { originPoint: "TBD", masterSpiritualCourt: "TBD", systemOverview: "TBD" },
-        culturalSystems: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" }
+        culturalSystems: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" },
+        theoreticalAxiom: { thirteenSignZodiac: "TBD", cotsworthDate: "TBD", axiomInsight: "TBD" }
       },
       temporalForecast: {
         today: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },

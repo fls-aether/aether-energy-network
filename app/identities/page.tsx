@@ -195,30 +195,33 @@ export default function IdentitiesPage() {
            <div className="space-y-6">
              <div className="bg-neon-purple/5 border border-neon-purple/20 rounded p-4 text-center">
                <p className="text-xs text-neon-purple font-mono uppercase tracking-widest">
-                 Calculated via Cotsworth Plan, UTC, & 13-Sign Ophiuchus logic.
+                 Calculated via Cotsworth Plan, UTC, & true astronomical boundaries.
                </p>
              </div>
              
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
-                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Tropical Placidus</h4>
-                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-black/30 border border-white/5 rounded-lg p-6 hover:border-cyan-500/30 transition-colors">
+                  <h4 className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-4 flex items-center gap-2">
+                     <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
+                     13-Sign Zodiac (True Astronomical)
+                  </h4>
+                  <p className="text-lg text-white font-mono">{mtx?.theoreticalAxiom?.thirteenSignZodiac || "Syncing telemetry..."}</p>
                 </div>
-                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
-                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Sidereal Fagan-Bradley Whole</h4>
-                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+
+                <div className="bg-black/30 border border-white/5 rounded-lg p-6 hover:border-amber-500/30 transition-colors">
+                  <h4 className="text-[10px] text-amber-500 font-mono tracking-widest uppercase mb-4 flex items-center gap-2">
+                     <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                     International Fixed Calendar (13-Month)
+                  </h4>
+                  <p className="text-lg text-white font-mono">{mtx?.theoreticalAxiom?.cotsworthDate || "Syncing telemetry..."}</p>
                 </div>
-                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
-                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Draconic</h4>
-                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
-                </div>
-                <div className="bg-panel/40 border border-white/5 rounded-lg p-6">
-                  <h4 className="text-[10px] text-neon-amber font-mono tracking-widest uppercase mb-2">Heliocentric</h4>
-                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
-                </div>
-                <div className="bg-panel/40 border border-white/5 rounded-lg p-6 md:col-span-2">
-                  <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-2">Numerology</h4>
-                  <p className="text-sm text-white font-mono opacity-50">Awaiting deep-space telemetry...</p>
+
+                <div className="bg-gradient-to-br from-neon-purple/10 to-transparent border border-neon-purple/30 rounded-lg p-6 md:col-span-2 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                  <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-4">Axiom Insight</h4>
+                  <p className="text-base text-neon-purple/90 font-mono italic leading-relaxed drop-shadow-[0_0_8px_rgba(157,0,255,0.4)]">
+                     "{mtx?.theoreticalAxiom?.axiomInsight || "Awaiting advanced esoteric synthesis from the Aether Genesis Engine..."}"
+                  </p>
                 </div>
              </div>
            </div>

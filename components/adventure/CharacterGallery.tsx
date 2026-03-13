@@ -43,7 +43,7 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
       }
     } catch (err) {
       console.error(err);
-      setGenerationError("Synthesis failed. Displaying local Merkaba.");
+      setGenerationError(avatar ? "Re-calibration failed. Matrix unstable." : "Synthesis failed. Displaying local Merkaba.");
     } finally {
       setIsGenerating(false);
     }
@@ -82,10 +82,19 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
              
              {/* Actual Avatar Rendering or Fallback */}
              {avatar ? (
-                <div 
-                   className="absolute inset-0 opacity-80 mix-blend-screen bg-cover bg-center transition-transform duration-[20s] group-hover:scale-110"
-                   style={{ backgroundImage: `url(${avatar})` }}
-                />
+                <>
+                  <div 
+                     className={`absolute inset-0 opacity-80 mix-blend-screen bg-cover bg-center transition-all duration-700 ${isGenerating ? 'grayscale brightness-50 blur-sm scale-110' : 'group-hover:scale-110'}`}
+                     style={{ backgroundImage: `url(${avatar})` }}
+                  />
+                  {isGenerating && (
+                    <div className="absolute inset-0 flex items-center justify-center z-25 bg-black/40 backdrop-blur-sm pointer-events-none">
+                      <div className="font-mono text-cyan-400 text-sm animate-pulse tracking-widest uppercase text-center px-4 drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">
+                         Synthesizing sacred geometry...
+                      </div>
+                    </div>
+                  )}
+                </>
              ) : (
                 <div 
                    className="absolute inset-0 opacity-60 mix-blend-screen"
@@ -119,9 +128,9 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
                 </p>
 
                 {/* Avatar Generation Controls */}
-                {!avatar && (
-                   <div className="mt-4 border-t border-cyan-900/50 pt-4 flex flex-col items-center justify-center">
-                     {isGenerating ? (
+                <div className="mt-4 border-t border-cyan-900/50 pt-4 flex flex-col items-center justify-center relative z-50">
+                  {!avatar ? (
+                     isGenerating ? (
                         <div className="font-mono text-cyan-400 text-xs animate-pulse tracking-widest uppercase">
                            Synthesizing sacred geometry...
                         </div>
@@ -131,19 +140,28 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
                            className="w-full py-3 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/50 rounded text-cyan-300 font-mono text-xs uppercase tracking-widest transition-all hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] relative overflow-hidden group/btn"
                         >
                            <span className="relative z-10 font-bold drop-shadow-[0_0_5px_rgba(0,255,255,0.8)] animate-pulse">
-                              [ Manifest Sovereign Insignia ]
+                               [ Manifest Sovereign Insignia ]
                            </span>
                            {/* Button hover flare */}
                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />
                         </button>
-                     )}
-                     {generationError && (
-                        <div className="text-[10px] font-mono text-red-400 mt-2 text-center">
-                           {generationError}
-                        </div>
-                     )}
-                   </div>
-                )}
+                     )
+                  ) : (
+                     <button
+                        onClick={handleGenerateAvatar}
+                        disabled={isGenerating}
+                        className={`px-4 py-2 bg-transparent hover:bg-white/5 border border-white/20 rounded text-foreground/70 hover:text-white font-mono text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
+                     >
+                        <svg className={`w-3 h-3 ${isGenerating ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        [ Re-calibrate Insignia ]
+                     </button>
+                  )}
+                  {generationError && (
+                     <div className="text-[10px] font-mono text-red-400 mt-2 text-center">
+                        {generationError}
+                     </div>
+                  )}
+                </div>
              </div>
            </motion.div>
         )}
