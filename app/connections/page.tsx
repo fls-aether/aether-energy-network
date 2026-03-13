@@ -1,47 +1,71 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useOperatorStore } from "@/lib/store";
+import { useGhostProtocol } from "@/hooks/useGhostProtocol";
 
 export default function ConnectionsPage() {
-  const [inviteCode, setInviteCode] = useState("");
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [resonanceDetected, setResonanceDetected] = useState(false);
-  
   const { syncCode, confirmedConnections } = useOperatorStore();
-  
   const displayCode = syncCode || "AWT-XXXXXX-XXX";
 
-  const checkResonance = (code: string) => {
-    const parts = code.toUpperCase().split('-');
-    if (parts.length >= 2 && parts[1].length === 6) {
-      const mm = parts[1].slice(0, 2);
-      const yy = parts[1].slice(4, 6);
-      const yyNum = parseInt(yy, 10);
-      const is84to88 = yyNum >= 84 && yyNum <= 88;
-      const is96to99 = yyNum >= 96 && yyNum <= 99;
-      
-      if ((mm === '03' || mm === '10') && is84to88) return true;
-      if ((mm === '06' || mm === '12') && is96to99) return true;
-    }
-    return false;
+  // WebRTC Hook
+  const { 
+    status, messages, errorMsg, 
+    generateOffer, acceptOffer, finalizeConnection, 
+    sendMessage, disconnect 
+  } = useGhostProtocol();
+
+  // Handshake UI States
+  const [localOffer, setLocalOffer] = useState("");
+  const [remoteAnswerInput, setRemoteAnswerInput] = useState("");
+  
+  const [remoteOfferInput, setRemoteOfferInput] = useState("");
+  const [localAnswer, setLocalAnswer] = useState("");
+
+  const [handshakeError, setHandshakeError] = useState<string | null>(null);
+
+  // Chat Terminal State
+  const [chatInput, setChatInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Handshake Handlers (With try/catch constraints)
+  const handleGenerateOffer = async () => {
+    setHandshakeError(null);
+    const token = await generateOffer();
+    if (token) setLocalOffer(token);
   };
 
-  const handleSendInvite = (e: React.FormEvent) => {
+  const handleFinalizeInitiator = async () => {
+    setHandshakeError(null);
+    if (!remoteAnswerInput) return;
+    try {
+      await finalizeConnection(remoteAnswerInput);
+    } catch (e: any) {
+      setHandshakeError(e.message || "Invalid Quantum Handshake string detected.");
+    }
+  };
+
+  const handleAcceptOffer = async () => {
+    setHandshakeError(null);
+    if (!remoteOfferInput) return;
+    try {
+      const token = await acceptOffer(remoteOfferInput);
+      if (token) setLocalAnswer(token);
+    } catch (e: any) {
+      setHandshakeError("Invalid Quantum Handshake string detected.");
+    }
+  };
+
+  const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inviteCode.trim() === "") return;
-    
-    setIsSyncing(true);
-    
-    setTimeout(() => {
-      setIsSyncing(false);
-      if (checkResonance(inviteCode)) {
-        setResonanceDetected(true);
-        setTimeout(() => setResonanceDetected(false), 5000);
-      }
-      setInviteCode("");
-    }, 2000);
+    if (!chatInput.trim()) return;
+    sendMessage(chatInput);
+    setChatInput("");
   };
 
   return (
@@ -53,63 +77,192 @@ export default function ConnectionsPage() {
         <p className="text-foreground/50 text-xs tracking-widest uppercase mt-2">Zero-Trust Mutual Authentication Layer</p>
       </header>
 
-      {/* Operator Code & Invite Mechanism */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Invite Code Display */}
-        <div className="bg-panel/40 border border-neon-gold/20 rounded-lg p-8 backdrop-blur-md relative group flex flex-col justify-center items-center">
-            <div className="absolute inset-0 bg-neon-gold/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-            <span className="text-xs text-neon-gold tracking-widest uppercase mb-4 text-center">Your Operator Code</span>
-            <div className="bg-black/50 border border-white/10 px-6 py-3 rounded text-center w-full max-w-xs shadow-inner">
-               <span className="text-lg tracking-[0.3em] text-white select-all">{displayCode}</span>
-            </div>
+      {/* Security Banner */}
+      {status === 'connected' && (
+        <div className="bg-red-950/40 border border-red-500/50 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+           <div>
+             <h3 className="text-red-400 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+               Ghost Protocol Active
+             </h3>
+             <p className="text-red-300/70 text-xs font-mono mt-1">Direct P2P Tunnel. Zero server retention.</p>
+           </div>
+           <button 
+             onClick={disconnect}
+             className="px-6 py-2 bg-red-900/40 hover:bg-red-800 border border-red-500/50 text-red-100 uppercase tracking-widest text-xs font-bold transition-all rounded"
+           >
+             [ Sever & Purge Link ]
+           </button>
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="text-red-400 border border-red-500/30 bg-red-950/20 p-4 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
+           System Alert: {errorMsg}
+        </div>
+      )}
+      {handshakeError && (
+        <div className="text-neon-amber border border-neon-amber/30 bg-orange-950/20 p-4 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
+           Handshake Error: {handshakeError}
+        </div>
+      )}
+
+      {/* Main UI Area */}
+      {status === 'connected' ? (
+        
+        // --- TERMINAL CHAT INTERFACE ---
+        <section className="bg-black/60 border border-cyan-900/50 rounded-lg overflow-hidden flex flex-col h-[500px]">
+          <div className="bg-cyan-950/30 border-b border-cyan-900/50 p-3 flex justify-between items-center">
+             <span className="text-cyan-500 text-xs font-mono uppercase tracking-[0.2em]">Encrypted Terminal</span>
+             <span className="text-cyan-500/50 text-[10px] font-mono">P2P TUNNEL // WEBRTC</span>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono scrollbar-thin scrollbar-thumb-cyan-900 scrollbar-track-transparent">
+             {messages.length === 0 && (
+               <div className="text-center text-cyan-800 text-xs uppercase mt-10">Uplink established. Awaiting input...</div>
+             )}
+             {messages.map((msg) => (
+                <div key={msg.id} className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[9px] text-cyan-600 uppercase">{msg.timestamp}</span>
+                    <span className={`text-[10px] font-bold tracking-wider ${msg.sender === 'me' ? 'text-neon-gold' : 'text-neon-purple'}`}>
+                      {msg.sender === 'me' ? 'LOCAL' : 'REMOTE'}
+                    </span>
+                  </div>
+                  <div className={`px-4 py-2 rounded max-w-[80%] break-words text-sm ${
+                    msg.sender === 'me' 
+                      ? 'bg-cyan-950/40 border border-cyan-800 text-cyan-100' 
+                      : 'bg-purple-950/40 border border-purple-800 text-purple-100'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+             ))}
+             <div ref={messagesEndRef} />
+          </div>
+
+          <form onSubmit={handleChatSubmit} className="p-4 border-t border-cyan-900/50 bg-black/80 flex gap-2">
+            <input 
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Inject payload..."
+              className="flex-1 bg-black border border-cyan-900 text-cyan-100 px-4 py-2 text-sm font-mono outline-none focus:border-cyan-400 transition-colors"
+            />
             <button 
-              className="mt-4 text-[10px] uppercase tracking-widest text-foreground/50 hover:text-neon-gold transition-colors"
-              onClick={() => navigator.clipboard.writeText(displayCode)}
+              type="submit" 
+              disabled={!chatInput.trim()}
+              className="bg-cyan-900/50 hover:bg-cyan-800 border border-cyan-700 text-cyan-300 px-6 font-mono text-xs uppercase tracking-widest disabled:opacity-50 transition-colors"
             >
-               [ Copy to Clipboard ]
+              Transmit
             </button>
-        </div>
+          </form>
+        </section>
 
-        {/* Input Field */}
-        <div className="bg-panel/40 border border-neon-purple/20 rounded-lg p-8 backdrop-blur-md relative group">
-            <div className="absolute inset-0 bg-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-            <h3 className="text-xs text-neon-purple tracking-widest uppercase mb-6 text-center">Establish Connection</h3>
-            <form onSubmit={handleSendInvite} className="flex flex-col gap-4">
-                <div className="relative">
-                 <input 
-                   type="text" 
-                   value={inviteCode}
-                   onChange={(e) => setInviteCode(e.target.value)}
-                   placeholder="e.g. XX-MMDDYY-XXX"
-                   disabled={isSyncing}
-                   className="w-full bg-black/60 border border-white/20 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple text-white px-4 py-3 rounded text-sm tracking-widest uppercase outline-none transition-all placeholder:text-foreground/30 text-center disabled:opacity-50"
-                 />
-               </div>
-               <button 
-                 type="submit"
-                 disabled={!inviteCode || isSyncing}
-                 className="w-full bg-neon-purple/10 border border-neon-purple hover:bg-neon-purple hover:text-white transition-all text-neon-purple uppercase tracking-widest text-xs py-3 rounded disabled:opacity-30 disabled:hover:bg-neon-purple/10 disabled:hover:text-neon-purple flex justify-center items-center gap-2 relative overflow-hidden group"
-               >
-                 <span className="relative z-10">{isSyncing ? "Syncing..." : "Transmit Sync Request"}</span>
-                 {isSyncing && <div className="absolute inset-0 bg-neon-purple/20 blur-sm animate-pulse" />}
-               </button>
-            </form>
-
-            <AnimatePresence>
-              {resonanceDetected && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute -top-12 left-1/2 -translate-x-1/2 w-max bg-neon-purple border border-white/50 text-white px-6 py-2 rounded shadow-[0_0_20px_rgba(188,19,254,0.8)] z-50 flex items-center gap-2"
+      ) : (
+        
+        // --- QUANTUM HANDSHAKE INTERFACE ---
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Initiator Block */}
+          <div className="bg-panel/40 border border-neon-gold/20 rounded-lg p-8 backdrop-blur-md relative group flex flex-col">
+              <div className="absolute inset-0 bg-neon-gold/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
+              <h3 className="text-xs text-neon-gold tracking-[0.2em] font-bold uppercase mb-6 text-center">Step 1: Initiate Tunnel</h3>
+              
+              {!localOffer ? (
+                <button 
+                   onClick={handleGenerateOffer}
+                   disabled={status !== 'idle'}
+                   className="w-full py-4 border border-neon-gold/50 bg-black/40 text-neon-gold uppercase text-xs tracking-[0.2em] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:bg-neon-gold/20 transition-all disabled:opacity-50 mt-4"
                 >
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                  <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase">High-Level Resonance Detected</span>
-                </motion.div>
+                  {status === 'offering' ? 'Generating Keys...' : '[ Generate Ghost Link ]'}
+                </button>
+              ) : (
+                <div className="flex flex-col gap-4">
+                   <div className="text-[10px] text-foreground/60 uppercase">Share this key with receiver:</div>
+                   <div className="flex items-center gap-2">
+                     <input 
+                       readOnly 
+                       value={localOffer} 
+                       className="flex-1 bg-black/50 border border-neon-gold/30 text-neon-gold/70 px-3 py-2 text-xs font-mono outline-none truncate"
+                     />
+                     <button 
+                       onClick={() => navigator.clipboard.writeText(localOffer)}
+                       className="px-3 py-2 bg-neon-gold/20 border border-neon-gold/50 text-neon-gold text-[10px] uppercase hover:bg-neon-gold hover:text-black transition-colors"
+                     >
+                       Copy
+                     </button>
+                   </div>
+                   
+                   <div className="border-t border-white/10 my-2" />
+                   
+                   <div className="text-[10px] text-foreground/60 uppercase">Paste their Answer Key here:</div>
+                   <input 
+                     type="text"
+                     value={remoteAnswerInput}
+                     onChange={(e) => setRemoteAnswerInput(e.target.value)}
+                     className="w-full bg-black/50 border border-neon-gold/30 text-white px-3 py-2 text-xs font-mono outline-none focus:border-neon-gold"
+                     placeholder="PASTE BASE64 STRING..."
+                   />
+                   <button 
+                     onClick={handleFinalizeInitiator}
+                     disabled={!remoteAnswerInput}
+                     className="w-full py-3 bg-neon-gold/20 border border-neon-gold text-neon-gold uppercase text-xs hover:bg-neon-gold hover:text-black transition-colors disabled:opacity-50"
+                   >
+                     Initialize Handshake
+                   </button>
+                </div>
               )}
-            </AnimatePresence>
-        </div>
-      </section>
+          </div>
+
+          {/* Receiver Block */}
+          <div className="bg-panel/40 border border-neon-purple/20 rounded-lg p-8 backdrop-blur-md relative group flex flex-col">
+              <div className="absolute inset-0 bg-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
+              <h3 className="text-xs text-neon-purple tracking-[0.2em] font-bold uppercase mb-6 text-center">Step 2: Receive Tunnel</h3>
+              
+              {!localAnswer ? (
+                <div className="flex flex-col gap-4 mt-4">
+                  <div className="text-[10px] text-foreground/60 uppercase">Paste Initiator's Key here:</div>
+                  <input 
+                    type="text"
+                    value={remoteOfferInput}
+                    onChange={(e) => setRemoteOfferInput(e.target.value)}
+                    className="w-full bg-black/50 border border-neon-purple/30 text-white px-3 py-2 text-xs font-mono outline-none focus:border-neon-purple"
+                    placeholder="PASTE BASE64 STRING..."
+                  />
+                  <button 
+                    onClick={handleAcceptOffer}
+                    disabled={!remoteOfferInput || status !== 'idle'}
+                    className="w-full py-3 bg-neon-purple/20 border border-neon-purple text-neon-purple uppercase text-xs hover:bg-neon-purple hover:text-white transition-colors disabled:opacity-50 shadow-[0_0_15px_rgba(188,19,254,0.1)]"
+                  >
+                    {status === 'connecting' ? 'Resolving Handshake...' : '[ Generate Answer Link ]'}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 mt-4">
+                  <div className="text-[10px] text-neon-purple uppercase p-2 border border-neon-purple/30 bg-neon-purple/10 text-center">
+                    Acceptance Sequence Complete
+                  </div>
+                  <div className="text-[10px] text-foreground/60 uppercase">Return this Answer Key to Initiator:</div>
+                  <div className="flex items-center gap-2">
+                     <input 
+                       readOnly 
+                       value={localAnswer} 
+                       className="flex-1 bg-black/50 border border-neon-purple/30 text-neon-purple/70 px-3 py-2 text-xs font-mono outline-none truncate"
+                     />
+                     <button 
+                       onClick={() => navigator.clipboard.writeText(localAnswer)}
+                       className="px-3 py-2 bg-neon-purple/20 border border-neon-purple/50 text-neon-purple text-[10px] uppercase hover:bg-neon-purple hover:text-white transition-colors"
+                     >
+                       Copy
+                     </button>
+                  </div>
+                  <div className="mt-4 text-[10px] text-center text-foreground/40 italic">Awaiting final Initiator confirmation to open tunnel...</div>
+                </div>
+              )}
+          </div>
+        </section>
+      )}
 
       {/* Confirmed Connections Grid */}
       <section className="mt-8 space-y-6">
