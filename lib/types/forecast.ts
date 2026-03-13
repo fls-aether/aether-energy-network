@@ -1,4 +1,4 @@
-export type TemporalKey = 'today' | 'this_week' | 'this_month' | 'this_year';
+export type TemporalKey = 'today' | 'thisWeek' | 'thisMonth' | 'thisYear';
 
 export interface TransitTelemetry {
   active_transit: string;
@@ -7,4 +7,6 @@ export interface TransitTelemetry {
   recommended_activities: string[];
 }
 
-export type AetherForecastPayload = Record<TemporalKey, TransitTelemetry>;
+import { TemporalForecast } from '../store';
+
+export type AetherForecastPayload = TemporalForecast;

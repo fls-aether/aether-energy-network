@@ -41,22 +41,23 @@ export function AetherForecastDeck({ payload }: AetherForecastDeckProps) {
             onSelect={setSelectedVector} 
         />
 
-        {/* Systemic Drag Alert Banner */}
+        {/* Systemic Drag Alert Banner (Deprecating system_warning down to energyStatus logic, or removing the warning entirely if not defined) */}
+        {/* We can re-use FrictionWarningBanner if we detect the word "friction" or "warning" in the energyStatus, or keep it null for now */}
         <FrictionWarningBanner 
-            warning={currentData?.system_warning} 
+            warning={undefined} 
             isLoading={isLoading} 
         />
 
         {/* Core Telemetry Readout */}
         <ActiveTransitTicker 
-            transit={currentData?.active_transit} 
-            energyStatus={currentData?.energy_status} 
+            transit={currentData?.transitTitle} 
+            energyStatus={currentData?.energyStatus} 
             isLoading={isLoading} 
         />
 
         {/* Execution Details */}
         <ActivityRecommendationGrid 
-            activities={currentData?.recommended_activities} 
+            activities={currentData ? [currentData.primaryDirective, currentData.secondaryDirective] : []} 
             isLoading={isLoading} 
         />
 

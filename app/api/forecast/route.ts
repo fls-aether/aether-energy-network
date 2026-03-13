@@ -15,6 +15,17 @@ const astrologicalPlacementSchema: Schema = {
   required: ["celestialBody", "sign", "degree", "house", "isRetrograde", "esotericMeaning"],
 };
 
+const temporalForecastBlockSchema: Schema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    transitTitle: { type: SchemaType.STRING, description: "Name of the active transit, formatted sci-fi (e.g., 'Mars Conjunction Protocol')." },
+    energyStatus: { type: SchemaType.STRING, description: "Status of the energy field (e.g., 'Subconscious system overhaul')." },
+    primaryDirective: { type: SchemaType.STRING, description: "Action-oriented tactical advice." },
+    secondaryDirective: { type: SchemaType.STRING, description: "Secondary tactical or mystic advice." },
+  },
+  required: ["transitTitle", "energyStatus", "primaryDirective", "secondaryDirective"],
+};
+
 const telemetrySchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -93,6 +104,17 @@ const telemetrySchema: Schema = {
         },
       },
       required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "cultural"]
+    },
+    temporalForecast: {
+      type: SchemaType.OBJECT,
+      description: "Predictive telemetry over 4 distinct time horizons based on transits.",
+      properties: {
+        today: temporalForecastBlockSchema,
+        thisWeek: temporalForecastBlockSchema,
+        thisMonth: temporalForecastBlockSchema,
+        thisYear: temporalForecastBlockSchema,
+      },
+      required: ["today", "thisWeek", "thisMonth", "thisYear"]
     }
   },
   required: [
@@ -104,7 +126,8 @@ const telemetrySchema: Schema = {
     "nextNewMoon", 
     "cosmicAnomalies", 
     "dailyAffirmation",
-    "identitiesMatrix"
+    "identitiesMatrix",
+    "temporalForecast"
   ],
 };
 
@@ -122,6 +145,11 @@ ESOTERIC RULESET & DEFINITIONS:
 
 STRICT CONTEXTUAL ADHERENCE:
 When calculating the identitiesMatrix and generating the \`esotericMeaning\` or \`systemOverview\` strings, you MUST strictly utilize the esoteric definitions and archetypes provided above. Do NOT hallucinate generic astrology. You must synthesize the exact definitions provided in this prompt against the user's calculated coordinates to provide a gritty, mechanical-esoteric analysis.
+
+Target Beta System Override (temporalForecast):
+Generate a highly personalized tactical forecast spanning today, thisWeek, thisMonth, thisYear.
+You MUST calculate actual, prevailing cosmic transits happening relative to the precise current date and overlay them onto the operator's chart and Numerological epicycle. 
+Name the transits exactly (e.g., "Pluto closely aspecting Natal Mars", "Numerological Year 7 Phase"), but contextualize them through the gritty, sci-fi/technological lens of the Aether Network (e.g., "Subconscious system overhaul", "Operator core processing bandwidth limited"). Provide clear, action-oriented directives for mitigating systemic friction or harnessing kinetic output. Note: maintain the mechanical-mystic aesthetic without breaking character.
 
 IMPORTANT TEMPORAL ANCHORING:
 The "current server date and time" acting as your "TODAY" is: ${new Date().toISOString()}
@@ -195,6 +223,12 @@ Analyze this data and generate the JSON telemetry payload.`;
         numerology: { lifePath: "TBD", coreArchetype: "TBD", mode: "TBD", anchor: "TBD", systemOverview: "TBD" },
         starseed: { originPoint: "TBD", masterSpiritualCourt: "TBD", systemOverview: "TBD" },
         cultural: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" }
+      },
+      temporalForecast: {
+        today: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
+        thisWeek: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
+        thisMonth: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
+        thisYear: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },
       }
     };
 

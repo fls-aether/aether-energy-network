@@ -6,43 +6,28 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // --- MOCK PAYLOADS PROVISIONING ---
 const mockForecastPayload: AetherForecastPayload = {
     today: {
-        active_transit: "Moon Square Mars",
-        energy_status: "High Friction / Kinetic Release",
-        system_warning: "Volatile emotional vectors detected. Delay critical communications.",
-        recommended_activities: [
-            "Heavy physical exertion (Weightlifting, Sprints)",
-            "Solo deep-work requiring intense singular focus",
-            "Clearing out old files/physical clutter"
-        ]
+        transitTitle: "Moon Square Mars",
+        energyStatus: "High Friction / Kinetic Release",
+        primaryDirective: "Heavy physical exertion (Weightlifting, Sprints)",
+        secondaryDirective: "Solo deep-work requiring intense singular focus"
     },
-    this_week: {
-        active_transit: "Mercury Trine Jupiter",
-        energy_status: "Expansion / Mental Flow",
-        recommended_activities: [
-            "Launch new marketing campaigns",
-            "Sign contracts or negotiate terms",
-            "Broaden learning (Workshops, Reading)",
-            "Long-distance communication"
-        ]
+    thisWeek: {
+        transitTitle: "Mercury Trine Jupiter",
+        energyStatus: "Expansion / Mental Flow",
+        primaryDirective: "Launch new marketing campaigns",
+        secondaryDirective: "Sign contracts or negotiate terms"
     },
-    this_month: {
-        active_transit: "Sun Conjunction Uranus",
-        energy_status: "Sudden Innovation / Disruption",
-        system_warning: "Expect unexpected schedule changes. Maintain flexibility.",
-        recommended_activities: [
-            "Brainstorming unconventional solutions",
-            "Upgrading tech stacks or hardware",
-            "Breaking routine habits"
-        ]
+    thisMonth: {
+        transitTitle: "Sun Conjunction Uranus",
+        energyStatus: "Sudden Innovation / Disruption",
+        primaryDirective: "Brainstorming unconventional solutions",
+        secondaryDirective: "Upgrading tech stacks or hardware"
     },
-    this_year: {
-        active_transit: "Saturn in Pisces Phase II",
-        energy_status: "Structuring the Ethereal",
-        recommended_activities: [
-            "Building long-term spiritual practices into daily routine",
-            "Formalizing artistic or creative endeavors into businesses",
-            "Establishing firm boundaries in relationships"
-        ]
+    thisYear: {
+        transitTitle: "Saturn in Pisces Phase II",
+        energyStatus: "Structuring the Ethereal",
+        primaryDirective: "Building long-term spiritual practices into daily routine",
+        secondaryDirective: "Formalizing artistic or creative endeavors into businesses"
     }
 };
 

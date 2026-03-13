@@ -9,9 +9,9 @@ interface TemporalSelectorProps {
 export function TemporalSelector({ selectedVector, onSelect }: TemporalSelectorProps) {
   const vectors: { key: TemporalKey; label: string }[] = [
     { key: "today", label: "Today" },
-    { key: "this_week", label: "This Week" },
-    { key: "this_month", label: "This Month" },
-    { key: "this_year", label: "This Year" },
+    { key: "thisWeek", label: "This Week" },
+    { key: "thisMonth", label: "This Month" },
+    { key: "thisYear", label: "This Year" },
   ];
 
   return (

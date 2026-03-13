@@ -40,6 +40,20 @@ export interface IdentitiesMatrix {
   };
 }
 
+export interface TemporalForecastBlock {
+  transitTitle: string;
+  energyStatus: string;
+  primaryDirective: string;
+  secondaryDirective: string;
+}
+
+export interface TemporalForecast {
+  today: TemporalForecastBlock;
+  thisWeek: TemporalForecastBlock;
+  thisMonth: TemporalForecastBlock;
+  thisYear: TemporalForecastBlock;
+}
+
 export interface TelemetryPayload {
   integrityPercentage: number;
   kineticOutput: string;
@@ -50,6 +64,7 @@ export interface TelemetryPayload {
   cosmicAnomalies: string;
   dailyAffirmation: string;
   identitiesMatrix?: IdentitiesMatrix;
+  temporalForecast?: TemporalForecast;
 }
 
 interface OperatorState {
