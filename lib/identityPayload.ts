@@ -13,7 +13,7 @@ export const OPERATOR_IDENTITY = {
       masterSpiritualCourt: "Beleth (Sun/MC), Zagan (ASC)",
     },
   },
-  cultural: {
+  culturalSystems: {
     "Cultural Systems": {
       chineseZodiac: "Yin Water Pig (1983)",
       japanese: "TBD",

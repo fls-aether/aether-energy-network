@@ -29,7 +29,7 @@ export interface IdentitiesMatrix {
     masterSpiritualCourt: string;
     systemOverview: string;
   };
-  cultural: {
+  culturalSystems: {
     chineseZodiac: string;
     japanese: string;
     tzolkin: string;

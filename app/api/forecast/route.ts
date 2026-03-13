@@ -110,7 +110,7 @@ const telemetrySchema: Schema = {
            },
            required: ["originPoint", "masterSpiritualCourt", "systemOverview"],
         },
-        cultural: {
+        culturalSystems: {
            type: SchemaType.OBJECT,
            properties: {
               chineseZodiac: { type: SchemaType.STRING },
@@ -124,7 +124,7 @@ const telemetrySchema: Schema = {
            required: ["chineseZodiac", "japanese", "tzolkin", "celticTree", "decans", "mahabote", "systemOverview"],
         },
       },
-      required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "cultural"]
+      required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "culturalSystems"]
     },
     temporalForecast: {
       type: SchemaType.OBJECT,
@@ -165,6 +165,7 @@ ESOTERIC RULESET & DEFINITIONS:
 5. Sacred Geometry: View their energetic signature through the lens of Merkaba, Torus, Metatron's Cube, or the Seed of Life.
 
 5. Sacred Geometry: View their energetic signature through the lens of Merkaba, Torus, Metatron's Cube, or the Seed of Life.
+6. Cultural Systems: Calculate the user's Japanese Nine Star Ki/Zodiac, Mayan Tzolkin Kin, Celtic Tree astrology sign, Egyptian/Chaldean Decan of their Tropical Sun, and Burmese Mahabote sign based on their exact birth date and time. Output these as precise, formatted strings.
 
 STRICT CONTEXTUAL ADHERENCE:
 When calculating the identitiesMatrix and generating the \`esotericMeaning\` or \`systemOverview\` strings, you MUST strictly utilize the esoteric definitions and archetypes provided above. Do NOT hallucinate generic astrology. You must synthesize the exact definitions provided in this prompt against the user's calculated coordinates to provide a gritty, mechanical-esoteric analysis.
@@ -253,7 +254,7 @@ Analyze this data and generate the JSON telemetry payload.`;
         heliocentric: [],
         numerology: { lifePath: "TBD", coreArchetype: "TBD", mode: "TBD", anchor: "TBD", systemOverview: "TBD" },
         starseed: { originPoint: "TBD", masterSpiritualCourt: "TBD", systemOverview: "TBD" },
-        cultural: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" }
+        culturalSystems: { chineseZodiac: "TBD", japanese: "TBD", tzolkin: "TBD", celticTree: "TBD", decans: "TBD", mahabote: "TBD", systemOverview: "TBD" }
       },
       temporalForecast: {
         today: { transitTitle: "Syncing Data", energyStatus: "Pending", primaryDirective: "Awaiting Connection", secondaryDirective: "Stand by" },

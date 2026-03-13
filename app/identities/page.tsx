@@ -164,31 +164,31 @@ export default function IdentitiesPage() {
            <div className="bg-panel/40 border border-white/5 rounded-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
              <div className="bg-black/30 p-4 rounded border border-white/5 md:col-span-2">
                 <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">System Overview</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">Chinese Zodiac</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.chineseZodiac || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.chineseZodiac || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-rose-400 font-mono tracking-widest uppercase mb-2">Japanese (Kigaku)</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.japanese || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.japanese || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-2">Tzolkin</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.tzolkin || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.tzolkin || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-amber-600 font-mono tracking-widest uppercase mb-2">Celtic Tree</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.celticTree || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.celticTree || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase mb-2">Decans</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.decans || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.decans || "Syncing..."}</p>
              </div>
              <div className="bg-black/30 p-4 rounded border border-white/5">
                 <h4 className="text-[10px] text-orange-400 font-mono tracking-widest uppercase mb-2">Mahabote</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.cultural?.mahabote || "Syncing..."}</p>
+                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.mahabote || "Syncing..."}</p>
              </div>
            </div>
         ) : activeSystem === "Theoretical Axiom" ? (
