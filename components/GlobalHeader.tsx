@@ -18,7 +18,7 @@ export function GlobalHeader() {
         <button
           onClick={() => setIsModalOpen(true)}
           className="w-10 h-10 rounded-full bg-black/50 border border-white/20 backdrop-blur-md flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all group"
-          title="Sovereign Data Backup"
+          title="Settings"
         >
           <span className="text-xl group-hover:rotate-90 transition-transform duration-500 delay-[0ms]">⚙</span>
         </button>

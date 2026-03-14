@@ -30,12 +30,12 @@ export interface IdentitiesMatrix {
     systemOverview: string;
   };
   culturalSystems: {
-    chineseZodiac: string;
-    japanese: string;
-    tzolkin: string;
-    celticTree: string;
-    decans: string;
-    mahabote: string;
+    chineseZodiac: { placement: string; meaning: string };
+    japanese: { placement: string; meaning: string };
+    tzolkin: { placement: string; meaning: string };
+    celticTree: { placement: string; meaning: string };
+    decans: { placement: string; meaning: string };
+    mahabote: { placement: string; meaning: string };
     systemOverview: string;
   };
   theoreticalAxiom: {

@@ -26,9 +26,14 @@ export function CharacterStatSheet({ stats }: CharacterStatSheetProps) {
       <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-white/20 rounded-tl-2xl" />
       <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-white/20 rounded-br-2xl" />
 
-      <h2 className="text-sm font-mono tracking-[0.3em] uppercase text-white/50 mb-8 text-center border-b border-white/10 pb-4">
-        Biometric Integrity
-      </h2>
+      <div className="text-center border-b border-white/10 pb-4 mb-8 flex flex-col items-center">
+        <h2 className="text-sm font-mono tracking-[0.3em] uppercase text-white/50 mb-2">
+          Biometric Integrity
+        </h2>
+        <p className="text-[10px] font-mono tracking-widest text-foreground/50 uppercase max-w-xl">
+          Real-time synthesis of your elemental and numerical stability derived from your active transit data.
+        </p>
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats ? (

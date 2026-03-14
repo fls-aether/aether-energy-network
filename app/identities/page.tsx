@@ -16,8 +16,8 @@ const IDENTITY_SYSTEMS = [
 ];
 
 const PLACEMENT_GROUPS = {
-  "Angles": ["MC", "IC", "ASC", "DSC"],
-  "Nodes & Axes": ["NN", "SN", "Vertex", "Anti-Vertex"],
+  "Angles": ["Midheaven", "Imum Coeli", "Ascendant", "Descendant"],
+  "Nodes & Axes": ["North Node", "South Node", "Vertex", "Anti-Vertex"],
   "Luminaries": ["Sun", "Moon", "Selene", "Lilith"],
   "Planets": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"],
   "High-Orbitals 1": ["Earth", "Chiron", "Astraea", "Hygiea"],
@@ -53,7 +53,7 @@ function IdentitySummary({ system }: { system: string }) {
 
   return (
     <div className="bg-neon-purple/5 border-l-2 border-neon-purple p-4 mb-8">
-      <h3 className="text-neon-purple text-[10px] font-mono uppercase tracking-widest mb-2">Systems Overview</h3>
+      <h3 className="text-neon-purple text-[10px] font-mono uppercase tracking-widest mb-2">Identity Overview</h3>
       <p className="text-foreground/70 text-xs font-mono leading-relaxed max-w-2xl">
         {getSummaryText(system)}
       </p>
@@ -61,8 +61,40 @@ function IdentitySummary({ system }: { system: string }) {
   );
 }
 
+// Added Component to render interactive Cultural System Blocks
+function CulturalSystemBlock({ title, colorClass, data, isActive, onClick }: { title: string, colorClass: string, data: any, isActive: boolean, onClick: () => void }) {
+  const placementText = typeof data === 'object' && data !== null ? data.placement : (data || "Syncing...");
+  const meaningText = typeof data === 'object' && data !== null ? data.meaning : "Awaiting esoteric Oracle transmission.";
+  
+  return (
+    <div 
+      onClick={onClick}
+      className={`bg-black/30 p-4 rounded border cursor-pointer transition-all duration-300 ${isActive ? `border-${colorClass.split('-')[1]}-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]` : 'border-white/5 hover:bg-white/5'}`}
+    >
+       <h4 className={`text-[10px] ${colorClass} font-mono tracking-widest uppercase mb-2`}>{title}</h4>
+       <p className="text-sm text-white font-mono mb-2">{placementText}</p>
+       
+       <AnimatePresence>
+         {isActive && (
+           <motion.div
+             initial={{ opacity: 0, height: 0 }}
+             animate={{ opacity: 1, height: "auto" }}
+             exit={{ opacity: 0, height: 0 }}
+             className="mt-4 pt-3 border-t border-white/10"
+           >
+             <h5 className="text-[10px] text-foreground/50 font-mono tracking-widest uppercase mb-1">Synthesized Meaning</h5>
+             <p className="text-xs text-foreground/80 font-mono leading-relaxed">{meaningText}</p>
+           </motion.div>
+         )}
+       </AnimatePresence>
+    </div>
+  );
+}
+
 export default function IdentitiesPage() {
   const [activeSystem, setActiveSystem] = useState("Tropical Placidus");
+  const [activeCulturalSystem, setActiveCulturalSystem] = useState<string | null>(null);
+  
   const { telemetry } = useOperatorStore();
   const mtx = telemetry?.identitiesMatrix;
 
@@ -95,7 +127,6 @@ export default function IdentitiesPage() {
     <div className="min-h-screen pt-24 pb-40 px-4 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
       {/* Sidebar Navigation for Systems */}
       <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
-        <h2 className="text-neon-gold text-xs font-mono tracking-widest uppercase mb-6 px-4">Archives</h2>
         {IDENTITY_SYSTEMS.map((sys) => (
           <button
             key={sys}
@@ -138,7 +169,7 @@ export default function IdentitiesPage() {
                     <p className="text-sm text-white font-mono mb-2">{mtx?.numerology?.mode || "Syncing..."} // {mtx?.numerology?.anchor || "TBD"}</p>
                   </div>
                   <div>
-                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">System Overview</h4>
+                    <h4 className="text-[10px] text-neon-gold font-mono tracking-widest uppercase mb-1">Identity Overview</h4>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{mtx?.numerology?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
                   </div>
                 </>
@@ -154,7 +185,7 @@ export default function IdentitiesPage() {
                     <p className="text-sm text-white font-mono mb-2">{mtx?.starseed?.masterSpiritualCourt || "Syncing..."}</p>
                   </div>
                   <div>
-                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">System Overview</h4>
+                    <h4 className="text-[10px] text-neon-purple font-mono tracking-widest uppercase mb-1">Identity Overview</h4>
                     <p className="text-xs text-foreground/70 font-mono leading-relaxed">{mtx?.starseed?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
                   </div>
                 </>
@@ -163,33 +194,34 @@ export default function IdentitiesPage() {
         ) : isCultural ? (
            <div className="bg-panel/40 border border-white/5 rounded-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
              <div className="bg-black/30 p-4 rounded border border-white/5 md:col-span-2">
-                <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">System Overview</h4>
+                <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">Identity Overview</h4>
                 <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.systemOverview || "Awaiting esoteric Oracle transmission."}</p>
              </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mb-2">Chinese Zodiac</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.chineseZodiac || "Syncing..."}</p>
-             </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-rose-400 font-mono tracking-widest uppercase mb-2">Japanese (Kigaku)</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.japanese || "Syncing..."}</p>
-             </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase mb-2">Tzolkin</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.tzolkin || "Syncing..."}</p>
-             </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-amber-600 font-mono tracking-widest uppercase mb-2">Celtic Tree</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.celticTree || "Syncing..."}</p>
-             </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-indigo-400 font-mono tracking-widest uppercase mb-2">Decans</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.decans || "Syncing..."}</p>
-             </div>
-             <div className="bg-black/30 p-4 rounded border border-white/5">
-                <h4 className="text-[10px] text-orange-400 font-mono tracking-widest uppercase mb-2">Mahabote</h4>
-                <p className="text-sm text-white font-mono mb-2">{mtx?.culturalSystems?.mahabote || "Syncing..."}</p>
-             </div>
+             
+             <CulturalSystemBlock 
+               title="Chinese Zodiac" colorClass="text-emerald-400" data={mtx?.culturalSystems?.chineseZodiac} 
+               isActive={activeCulturalSystem === 'chineseZodiac'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'chineseZodiac' ? null : 'chineseZodiac')} 
+             />
+             <CulturalSystemBlock 
+               title="Japanese (Kigaku)" colorClass="text-rose-400" data={mtx?.culturalSystems?.japanese} 
+               isActive={activeCulturalSystem === 'japanese'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'japanese' ? null : 'japanese')} 
+             />
+             <CulturalSystemBlock 
+               title="Tzolkin" colorClass="text-cyan-400" data={mtx?.culturalSystems?.tzolkin} 
+               isActive={activeCulturalSystem === 'tzolkin'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'tzolkin' ? null : 'tzolkin')} 
+             />
+             <CulturalSystemBlock 
+               title="Celtic Tree" colorClass="text-amber-600" data={mtx?.culturalSystems?.celticTree} 
+               isActive={activeCulturalSystem === 'celticTree'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'celticTree' ? null : 'celticTree')} 
+             />
+             <CulturalSystemBlock 
+               title="Decans" colorClass="text-indigo-400" data={mtx?.culturalSystems?.decans} 
+               isActive={activeCulturalSystem === 'decans'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'decans' ? null : 'decans')} 
+             />
+             <CulturalSystemBlock 
+               title="Mahabote" colorClass="text-orange-400" data={mtx?.culturalSystems?.mahabote} 
+               isActive={activeCulturalSystem === 'mahabote'} onClick={() => setActiveCulturalSystem(activeCulturalSystem === 'mahabote' ? null : 'mahabote')} 
+             />
            </div>
         ) : activeSystem === "Theoretical Axiom" ? (
            <div className="space-y-6">
@@ -227,6 +259,22 @@ export default function IdentitiesPage() {
            </div>
         ) : (
           <div className="space-y-12">
+            
+            {/* Zodiac Patterns Anomaly Section (Moved UP) */}
+            {showZodiacPatterns && (
+            <section className="mb-8 border-b border-white/10 pb-8">
+               <h3 className="text-neon-purple text-xs font-mono tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+                 <span className="w-2 h-2 bg-neon-purple rounded-full animate-pulse" />
+                 Zodiac Patterns & Anomalies
+               </h3>
+               <div className="bg-neon-purple/5 border border-neon-purple/20 rounded-lg p-6 backdrop-blur-sm">
+                  <p className="text-foreground/60 text-xs font-mono uppercase tracking-widest leading-relaxed">
+                    Scan complete. No rare grand crosses or stelliums detected in this specific layer. Latent geometric resonance stable.
+                  </p>
+               </div>
+            </section>
+            )}
+
             {Object.entries(PLACEMENT_GROUPS).map(([groupName, placements]) => (
               <section key={groupName}>
                 <h3 className="text-neon-amber text-[10px] font-mono tracking-[0.2em] uppercase mb-4 border-b border-neon-amber/20 pb-2 inline-block">
@@ -278,21 +326,6 @@ export default function IdentitiesPage() {
               </section>
             ))}
           </div>
-        )}
-
-        {/* Zodiac Patterns Anomaly Section */}
-        {showZodiacPatterns && (
-        <section className="mt-16 pt-8 border-t border-white/10">
-           <h3 className="text-neon-purple text-xs font-mono tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
-             <span className="w-2 h-2 bg-neon-purple rounded-full animate-pulse" />
-             Zodiac Patterns & Anomalies
-           </h3>
-           <div className="bg-neon-purple/5 border border-neon-purple/20 rounded-lg p-6 backdrop-blur-sm">
-              <p className="text-foreground/60 text-xs font-mono uppercase tracking-widest leading-relaxed">
-                Scan complete. No rare grand crosses or stelliums detected in this specific layer. Latent geometric resonance stable.
-              </p>
-           </div>
-        </section>
         )}
 
       </main>

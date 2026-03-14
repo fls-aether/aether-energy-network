@@ -90,13 +90,31 @@ export default function Home() {
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 15, ease: "linear", repeat: Infinity }}
                 >
-                  <Image 
-                    src="/images/aether-network-logo-outer-ouroboros.png"
-                    alt="Aether Network Ouroboros"
-                    fill
-                    className="object-contain scale-110 drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700"
-                    priority
-                  />
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full scale-110 drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(255,215,0,0.6)] transition-all duration-700">
+                    <defs>
+                      <linearGradient id="ouroborosGlowSplash" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
+                        <stop offset="50%" stopColor="#FF8C00" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#FFD700" stopOpacity="0.2" />
+                      </linearGradient>
+                      <filter id="glowEffectSplash" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="2" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                      </filter>
+                    </defs>
+                    <path 
+                      d="M50 10 A40 40 0 1 1 45 10.3" 
+                      stroke="url(#ouroborosGlowSplash)" 
+                      strokeWidth="1.5" 
+                      strokeLinecap="round" 
+                      filter="url(#glowEffectSplash)"
+                    />
+                    <path 
+                      d="M47 7 L43 10.3 L47 13.6 Z" 
+                      fill="#FFD700" 
+                      filter="url(#glowEffectSplash)"
+                    />
+                  </svg>
                 </motion.div>
               </div>
               

@@ -15,12 +15,12 @@ export const OPERATOR_IDENTITY = {
   },
   culturalSystems: {
     "Cultural Systems": {
-      chineseZodiac: "Yin Water Pig (1983)",
-      japanese: "TBD",
-      tzolkin: "TBD",
-      celticTree: "TBD",
-      decans: "TBD",
-      mahabote: "TBD",
+      chineseZodiac: { placement: "Yin Water Pig (1983)", meaning: "Functions as a stealth-capable fluid dynamics engine, absorbing and neutralizing hostile frequencies." },
+      japanese: { placement: "TBD", meaning: "Awaiting Oracle Synthesis" },
+      tzolkin: { placement: "TBD", meaning: "Awaiting Oracle Synthesis" },
+      celticTree: { placement: "TBD", meaning: "Awaiting Oracle Synthesis" },
+      decans: { placement: "TBD", meaning: "Awaiting Oracle Synthesis" },
+      mahabote: { placement: "TBD", meaning: "Awaiting Oracle Synthesis" },
     },
   },
   astrological: {

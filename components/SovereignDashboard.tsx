@@ -9,10 +9,12 @@ import { WireframeMerkaba } from "./WireframeMerkaba";
 import { useState, useEffect } from "react";
 import { useOperatorStore, TelemetryPayload } from "@/lib/store";
 import { Canvas } from "@react-three/fiber";
+import { getGroundingScent } from "@/lib/scentMappings";
 
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const { operatorDetails, telemetry, setGlobalTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
+  const tropicalSunSign = telemetry?.identitiesMatrix?.tropical?.find((p) => p.celestialBody === "Sun")?.sign;
 
   useEffect(() => {
     // Cache invalidation fallback for Target Alpha upgrade
@@ -104,12 +106,12 @@ export function SovereignDashboard() {
             Aether Network
           </h1>
           <p className="text-foreground/60 text-xs font-mono tracking-widest uppercase mt-1">
-            Sovereign OS // Primary Bulkhead
+            Sovereign 05 // Primary Bulkhead <span className="opacity-50 inline-block ml-2 text-[10px] lowercase tracking-normal font-sans">(Current network node sector)</span>
           </p>
         </div>
         <div className="text-right hidden md:block">
           <p className="text-neon-amber text-xs font-mono tracking-widest uppercase mb-1">
-            Status: Synchronized
+            Status: Synchronized <span className="text-foreground/50 inline-block ml-2 text-[10px] lowercase tracking-normal font-sans">(Biometrics linked)</span>
           </p>
           <div className="flex gap-1 justify-end">
              <div className="w-2 h-2 bg-neon-gold shadow-[0_0_5px_#ffd700]" />
@@ -122,32 +124,13 @@ export function SovereignDashboard() {
       {/* Main Grid Layout */}
       <main className="w-full max-w-6xl flex flex-col items-center z-10 space-y-8">
         
-        {/* Top: Integrity Meter */}
-        <div className="flex justify-center w-full">
-           <SystemIntegrityMeter percentage={telemetry.integrityPercentage} />
-        </div>
+        {/* Contextual Summary */}
+        <p className="text-foreground/80 text-sm font-mono tracking-widest uppercase text-center max-w-2xl mb-2 mt-4">
+          Real-time monitoring of your energetic telemetry and local cosmic environment.
+        </p>
 
-        {/* Middle: Conditional Friction Alert */}
-        <FrictionAlertBanner message={telemetry.kineticOutput} />
-
-        {/* Bottom: Kinetic Stats */}
-        <div className="w-full flex justify-center mt-4">
-           <KineticStatSheet stats={stats} />
-        </div>
-
-        {/* 9-Year Epicycle */}
-        <div className="w-full flex justify-center mt-8">
-           <div className="bg-panel/50 border border-white/10 rounded-lg p-6 flex flex-col items-center justify-center w-full max-w-2xl backdrop-blur-md relative overflow-hidden group">
-             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-             <h3 className="text-neon-gold text-[10px] font-mono tracking-widest uppercase mb-2 text-center">9-Year Epicycle Phase</h3>
-             <p className="text-white text-lg font-mono tracking-widest uppercase">
-               {telemetry.epicycle}
-             </p>
-           </div>
-        </div>
-
-        {/* Live Celestial Telemetry Module */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 pb-32">
+        {/* Live Celestial Telemetry Module (Moved to Top) */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             
             {/* Next Full Moon */}
             <div className="bg-panel/50 border border-neon-purple/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] backdrop-blur-md relative overflow-hidden group transition-all hover:border-neon-purple/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
@@ -174,9 +157,15 @@ export function SovereignDashboard() {
             <div className="bg-panel/50 border border-neon-purple/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] backdrop-blur-md relative overflow-hidden group transition-all hover:border-neon-purple/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] md:col-span-2">
                <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-neon-gold text-[10px] font-mono tracking-widest uppercase mb-2 text-center">Daily Calibration Affirmation</h3>
-               <p className="text-neon-gold text-sm font-mono tracking-wider italic leading-relaxed text-center max-w-2xl">
+               <p className="text-neon-gold text-sm font-mono tracking-wider italic leading-relaxed text-center max-w-2xl mb-4">
                  &quot;{telemetry.dailyAffirmation}&quot;
                </p>
+               <div className="border-t border-neon-gold/20 w-3/4 max-w-md pt-4 mt-2">
+                   <h4 className="text-[10px] text-neon-gold/60 font-mono tracking-widest uppercase mb-1 text-center">Sovereign Olfactory Anchor</h4>
+                   <p className="text-xs text-white/80 font-mono tracking-wider text-center">
+                     {getGroundingScent(tropicalSunSign)}
+                   </p>
+               </div>
             </div>
 
             {/* Kinetic Summary */}
@@ -190,7 +179,45 @@ export function SovereignDashboard() {
 
         </div>
 
-        {/* Removed Telemetry Scaffolding per Phase 20 */}
+        <div className="w-full h-px bg-white/10 my-4" />
+        
+        {/* Integrity Meter */}
+        <div className="flex flex-col items-center w-full">
+           <p className="text-foreground/50 text-[10px] font-mono tracking-widest uppercase mb-4 text-center max-w-xl">
+             Current stability of your biometric rhythm
+           </p>
+           <SystemIntegrityMeter percentage={telemetry.integrityPercentage} />
+        </div>
+
+        {/* Conditional Friction Alert */}
+        <div className="w-full flex justify-center mt-2 flex-col items-center">
+           <p className="text-foreground/50 text-[10px] font-mono tracking-widest uppercase mb-4 text-center max-w-xl">
+             Warning indicator for environmental atmospheric drag
+           </p>
+           <FrictionAlertBanner message={telemetry.kineticOutput} />
+        </div>
+
+        {/* Kinetic Stats */}
+        <div className="w-full flex justify-center mt-4 flex-col items-center">
+           <p className="text-foreground/50 text-[10px] font-mono tracking-widest uppercase mb-4 text-center max-w-xl">
+             Live breakdown of your primary elemental drives
+           </p>
+           <KineticStatSheet stats={stats} />
+        </div>
+
+        {/* 9-Year Epicycle */}
+        <div className="w-full flex justify-center mt-4 flex-col items-center pb-32">
+           <p className="text-foreground/50 text-[10px] font-mono tracking-widest uppercase mb-4 text-center max-w-xl">
+             Your active position within the numerological cycle
+           </p>
+           <div className="bg-panel/50 border border-white/10 rounded-lg p-6 flex flex-col items-center justify-center w-full max-w-2xl backdrop-blur-md relative overflow-hidden group">
+             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+             <h3 className="text-neon-gold text-[10px] font-mono tracking-widest uppercase mb-2 text-center">9-Year Epicycle Phase</h3>
+             <p className="text-white text-lg font-mono tracking-widest uppercase">
+               {telemetry.epicycle}
+             </p>
+           </div>
+        </div>
 
         {/* Access Button for Grounding Canvas */}
         <div className="w-full flex justify-center mt-8 pb-12 z-20">

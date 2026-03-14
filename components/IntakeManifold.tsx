@@ -221,7 +221,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
       >
         <div className="mb-12">
           <h1 className="text-3xl md:text-5xl font-bold tracking-widest text-neon-gold uppercase mb-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
-            Identity Core Calibration
+            Identity Core
           </h1>
           <p className="text-foreground/70 tracking-widest text-sm uppercase">
             Awaiting Sovereign Coordinates //
@@ -231,7 +231,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="vibrationalKey" className="block text-xs font-mono text-neon-purple uppercase tracking-widest">
-              Vibrational Key
+              Vibrational Key (Full Name)
             </label>
             <input
               id="vibrationalKey"

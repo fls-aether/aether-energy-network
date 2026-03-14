@@ -19,9 +19,7 @@ export function LoginGate({ onComplete }: LoginGateProps) {
     await signIn('google', { callbackUrl: '/' });
   };
 
-  const handleGuest = () => {
-    onComplete();
-  };
+
 
   const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,18 +39,57 @@ export function LoginGate({ onComplete }: LoginGateProps) {
         className="w-full p-8 md:p-16 z-20 flex flex-col items-center justify-center max-w-md"
       >
         <div className="mb-10 text-center flex flex-col items-center">
-          <div className="relative w-24 h-24 mb-4">
-            <Image 
-              src="/images/aether-network-logo3.png" 
-              alt="Aether Network Logo" 
-              fill 
-              className="object-contain"
-            />
+          <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
+            {/* Ouroboros SVG Wrapper */}
+            <motion.div
+              className="absolute inset-0 z-20"
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 15, ease: "linear", repeat: Infinity }}
+            >
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]">
+                <defs>
+                  <linearGradient id="ouroborosGlowLG" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
+                    <stop offset="50%" stopColor="#FF8C00" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#FFD700" stopOpacity="0.2" />
+                  </linearGradient>
+                  <filter id="glowEffectLG" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
+                <path 
+                  d="M50 10 A40 40 0 1 1 45 10.3" 
+                  stroke="url(#ouroborosGlowLG)" 
+                  strokeWidth="1.5" 
+                  strokeLinecap="round" 
+                  filter="url(#glowEffectLG)"
+                />
+                <path 
+                  d="M47 7 L43 10.3 L47 13.6 Z" 
+                  fill="#FFD700" 
+                  filter="url(#glowEffectLG)"
+                />
+              </svg>
+            </motion.div>
+            {/* Inner Geometry */}
+            <motion.div
+              className="absolute inset-0 z-10"
+              animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
+            >
+              <Image 
+                src="/images/aether-network-logo3.png" 
+                alt="Aether Network Logo" 
+                fill 
+                className="object-contain scale-75"
+              />
+            </motion.div>
           </div>
-          <h1 className="text-3xl font-bold tracking-widest text-neon-gold uppercase mb-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
-            Network Access
+          <h1 className="text-3xl font-bold tracking-widest text-neon-gold uppercase mb-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)] text-center">
+            Aether Energy Network
           </h1>
-          <p className="text-foreground/70 tracking-widest text-xs uppercase">
+          <p className="text-foreground/70 tracking-widest text-xs uppercase text-center">
             Identify to connect //
           </p>
         </div>
@@ -60,7 +97,7 @@ export function LoginGate({ onComplete }: LoginGateProps) {
         <form onSubmit={handleEmailLogin} className="w-full space-y-6">
           <div className="space-y-2">
             <label htmlFor="authEmail" className="block text-xs font-mono text-neon-purple uppercase tracking-widest">
-              Email Vector
+              Email
             </label>
             <input
               id="authEmail"
@@ -126,13 +163,6 @@ export function LoginGate({ onComplete }: LoginGateProps) {
             {isAuthenticating ? "Authenticating..." : "Sign in with Google"}
           </span>
         </motion.button>
-
-        <button 
-          onClick={handleGuest}
-          className="text-white/50 hover:text-white mt-4 font-mono text-[10px] uppercase tracking-widest transition-colors"
-        >
-          [ Continue as Guest ]
-        </button>
 
       </motion.div>
     </div>

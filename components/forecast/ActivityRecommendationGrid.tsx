@@ -33,9 +33,6 @@ export function ActivityRecommendationGrid({ activities, isLoading }: ActivityRe
                         transition={{ delay: index * 0.1 }}
                         className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-neon-gold/50 hover:bg-white/5 transition-all duration-300 group"
                     >
-                        <div className="w-6 h-6 rounded-full border border-neon-gold/50 flex items-center justify-center mb-4 group-hover:shadow-[0_0_10px_rgba(255,215,0,0.5)] group-hover:border-neon-gold">
-                            <div className="w-1 h-1 bg-neon-gold rounded-full" />
-                        </div>
                         <p className="text-sm font-mono tracking-wide leading-relaxed text-foreground/90">
                             {activity}
                         </p>
