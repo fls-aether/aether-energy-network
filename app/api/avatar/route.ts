@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const prompt = `A highly detailed, metaphysical sacred geometry emblem representing a ${operatorClass} aligned with the energy of ${dominantSign}. Intricate golden ratio proportions, ethereal cosmic light, crystalline structures, and overlapping astral circles (resembling Metatron's Cube or the Seed of Life). Clean, symmetrical, and deeply mystical. Dark aethereal background with glowing cyan and gold line work. No text, no faces, purely geometric and esoteric.`;
 
     // Construct exactly for the v1beta Imagen 3 endpoint
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-images:predict?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
     const requestBody = {
       instances: [

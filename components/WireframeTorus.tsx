@@ -39,9 +39,9 @@ export function WireframeTorus({ intensity }: WireframeTorusProps) {
 
   return (
     <group ref={groupRef}>
-      {/* Complex Geometric Torus Knot */}
+      {/* Core Geometric Torus */}
       <mesh>
-        <torusKnotGeometry args={[1.2, 0.4, 128, 32]} />
+        <torusGeometry args={[2, 0.4, 16, 100]} />
         <meshStandardMaterial
           ref={materialRef1}
           color="#D4AF37"

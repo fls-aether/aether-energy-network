@@ -8,7 +8,7 @@ interface CharacterGalleryProps {
 }
 
 export function CharacterGallery({ operatorClass, classDescription }: CharacterGalleryProps) {
-  const { telemetry, setOperatorAvatar } = useOperatorStore();
+  const { telemetry, setOperatorAvatar, userProfileImage, setUserProfileImage } = useOperatorStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
 
@@ -147,14 +147,31 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
                         </button>
                      )
                   ) : (
-                     <button
-                        onClick={handleGenerateAvatar}
-                        disabled={isGenerating}
-                        className={`px-4 py-2 bg-transparent hover:bg-white/5 border border-white/20 rounded text-foreground/70 hover:text-white font-mono text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
-                     >
-                        <svg className={`w-3 h-3 ${isGenerating ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                        [ Re-calibrate Insignia ]
-                     </button>
+                     <div className="flex flex-col items-center gap-2">
+                         <button
+                            onClick={handleGenerateAvatar}
+                            disabled={isGenerating}
+                            className={`px-4 py-2 bg-transparent hover:bg-white/5 border border-white/20 rounded text-foreground/70 hover:text-white font-mono text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
+                         >
+                            <svg className={`w-3 h-3 ${isGenerating ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            [ Re-calibrate Insignia ]
+                         </button>
+
+                         {/* Set Profile Picture Logic */}
+                         {userProfileImage !== avatar ? (
+                            <button
+                               onClick={() => setUserProfileImage(avatar || null)}
+                               className="px-4 py-2 mt-1 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 rounded text-cyan-200 font-mono text-[10px] uppercase tracking-widest transition-all"
+                            >
+                               [ Set as Profile Picture ]
+                            </button>
+                         ) : (
+                             <span className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mt-3">
+                                <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
+                                Active Profile Image
+                             </span>
+                         )}
+                     </div>
                   )}
                   {generationError && (
                      <div className="text-[10px] font-mono text-red-400 mt-2 text-center">

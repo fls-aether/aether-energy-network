@@ -53,11 +53,25 @@ export default function AdventurePortal() {
           </div>
         </motion.header>
 
+        {/* Maturity Gated Character Gallery */}
+        <motion.section
+           initial={{ opacity: 0, y: 30 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: 0.2 }}
+        >
+            {isAdult ? (
+               <CharacterGallery 
+                 operatorClass={activeCodex?.operatorClass} 
+                 classDescription={activeCodex?.classDescription} 
+               />
+            ) : <MaturityLockedView />}
+        </motion.section>
+
         {/* Biometric Stats */}
         <motion.section 
            initial={{ opacity: 0, x: -20 }}
            animate={{ opacity: 1, x: 0 }}
-           transition={{ delay: 0.2 }}
+           transition={{ delay: 0.4 }}
         >
             <CharacterStatSheet stats={stats} />
         </motion.section>
@@ -66,23 +80,9 @@ export default function AdventurePortal() {
         <motion.section 
            initial={{ opacity: 0, x: 20 }}
            animate={{ opacity: 1, x: 0 }}
-           transition={{ delay: 0.4 }}
-        >
-            <NarrativeCodex codexLore={activeCodex?.codexLore} systemInsight={activeCodex?.systemInsight} />
-        </motion.section>
-
-        {/* Maturity Gated Character Gallery */}
-        <motion.section
-           initial={{ opacity: 0, y: 30 }}
-           animate={{ opacity: 1, y: 0 }}
            transition={{ delay: 0.6 }}
         >
-            {isAdult ? (
-               <CharacterGallery 
-                 operatorClass={activeCodex?.operatorClass} 
-                 classDescription={activeCodex?.classDescription} 
-               />
-            ) : <MaturityLockedView />}
+            <NarrativeCodex codexLore={activeCodex?.codexLore} systemInsight={activeCodex?.systemInsight} />
         </motion.section>
 
       </main>

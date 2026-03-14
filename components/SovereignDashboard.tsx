@@ -219,19 +219,6 @@ export function SovereignDashboard() {
            </div>
         </div>
 
-        {/* Access Button for Grounding Canvas */}
-        <div className="w-full flex justify-center mt-8 pb-12 z-20">
-            <button
-                onClick={() => setIsCanvasOpen(true)}
-                className="group relative px-8 py-3 bg-black/40 border border-neon-gold/30 rounded-full overflow-hidden transition-all duration-300 hover:border-neon-gold/80 hover:shadow-[0_0_20px_rgba(255,215,0,0.3)] backdrop-blur-sm"
-            >
-                <div className="absolute inset-0 w-0 bg-neon-gold/10 transition-all duration-500 ease-out group-hover:w-full" />
-                <span className="relative z-10 text-neon-gold text-xs font-mono tracking-[0.2em] uppercase group-hover:text-white transition-colors">
-                    Access Tactile Canvas
-                </span>
-            </button>
-        </div>
-
       </main>
 
       {/* Grounding Canvas Modal Overlay */}

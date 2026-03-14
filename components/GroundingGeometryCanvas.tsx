@@ -14,6 +14,7 @@ const FREQUENCY_COLORS = [
 
 export function GroundingGeometryCanvas({ onClose }: { onClose: () => void }) {
   const [selectedColor, setSelectedColor] = useState<string>(FREQUENCY_COLORS[0]);
+  const [rotationDegree, setRotationDegree] = useState(0);
   
   // A simple 4-frequency inspired grid (using an octagonal/mandala base for geometric complexity)
   // We'll define paths purely by ID so we can track their states
@@ -29,6 +30,14 @@ export function GroundingGeometryCanvas({ onClose }: { onClose: () => void }) {
       [id]: selectedColor
     }));
   };
+
+  // Modifier: Canvas Reload Transition
+  if (isComplete) {
+    setTimeout(() => {
+      setPathFills({});
+      setRotationDegree(prev => prev + 45); // Mechanical shift
+    }, 2500); // Wait for the glow effect to be appreciated
+  }
 
   return (
     <motion.div
@@ -85,7 +94,11 @@ export function GroundingGeometryCanvas({ onClose }: { onClose: () => void }) {
                 )}
             </AnimatePresence>
 
-            <svg viewBox="0 0 200 200" className="w-[80%] h-[80%] max-w-[300px] drop-shadow-lg z-10 overflow-visible">
+            <svg 
+                viewBox="0 0 200 200" 
+                className="w-[80%] h-[80%] max-w-[300px] drop-shadow-lg z-10 overflow-visible transition-transform duration-700 ease-in-out"
+                style={{ transform: `rotate(${rotationDegree}deg)` }}
+            >
                 <g stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeLinejoin="round">
                     {/* Center Square (4 parts) */}
                     <polygon id="p1" points="100,100 130,70 100,40 70,70" fill={pathFills['p1'] || "transparent"} onClick={() => handlePathClick('p1')} className="cursor-pointer transition-colors duration-300 hover:fill-white/10" />

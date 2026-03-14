@@ -110,6 +110,9 @@ interface OperatorState {
   telemetry: TelemetryPayload | null;
   setGlobalTelemetry: (payload: TelemetryPayload) => void;
   setOperatorAvatar: (avatarData: string) => void;
+  // Persistent user selected profile image independent of current telemetry
+  userProfileImage: string | null;
+  setUserProfileImage: (url: string | null) => void;
   resetTelemetry: () => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
@@ -146,6 +149,9 @@ export const useOperatorStore = create<OperatorState>()(
           ? { ...state.telemetry, operatorAvatar: avatarData }
           : null // Changed from undefined to null to match telemetry type
       })),
+
+      userProfileImage: null,
+      setUserProfileImage: (url) => set({ userProfileImage: url }),
 
       resetTelemetry: () => set({ 
         // Assuming 'identity', 'activeSystem' are properties that might be added later,
