@@ -3,69 +3,38 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useOperatorStore } from "@/lib/store";
-import { useGhostProtocol } from "@/hooks/useGhostProtocol";
 
 export default function ConnectionsPage() {
-  const { syncCode, confirmedConnections } = useOperatorStore();
-  const displayCode = syncCode || "AWT-XXXXXX-XXX";
-
-  // WebRTC Hook
-  const { 
-    status, messages, errorMsg, 
-    generateOffer, acceptOffer, finalizeConnection, 
-    sendMessage, disconnect 
-  } = useGhostProtocol();
-
-  // Handshake UI States
-  const [localOffer, setLocalOffer] = useState("");
-  const [remoteAnswerInput, setRemoteAnswerInput] = useState("");
+  const { syncCode, setSyncCode, confirmedConnections } = useOperatorStore();
   
-  const [remoteOfferInput, setRemoteOfferInput] = useState("");
-  const [localAnswer, setLocalAnswer] = useState("");
+  // Handshake UI States
+  const [activeTab, setActiveTab] = useState<'invite' | 'links'>('links');
+  const [selectedOperator, setSelectedOperator] = useState<any>(null);
+  const [inviteTarget, setInviteTarget] = useState("");
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
 
-  const [handshakeError, setHandshakeError] = useState<string | null>(null);
-
-  // Chat Terminal State
-  const [chatInput, setChatInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  // Generate Sync Code if missing
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Handshake Handlers (With try/catch constraints)
-  const handleGenerateOffer = async () => {
-    setHandshakeError(null);
-    const token = await generateOffer();
-    if (token) setLocalOffer(token);
-  };
-
-  const handleFinalizeInitiator = async () => {
-    setHandshakeError(null);
-    if (!remoteAnswerInput) return;
-    try {
-      await finalizeConnection(remoteAnswerInput);
-    } catch (e: any) {
-      setHandshakeError(e.message || "Invalid Quantum Handshake string detected.");
+    if (!syncCode) {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      setSyncCode(`AWT-${code}`);
     }
-  };
+  }, [syncCode, setSyncCode]);
 
-  const handleAcceptOffer = async () => {
-    setHandshakeError(null);
-    if (!remoteOfferInput) return;
-    try {
-      const token = await acceptOffer(remoteOfferInput);
-      if (token) setLocalAnswer(token);
-    } catch (e: any) {
-      setHandshakeError("Invalid Quantum Handshake string detected.");
-    }
-  };
+  // Mock Connected Operators for Phase 4
+  const mockRoster = [
+    { id: 'cipher', name: 'Operator: Cipher', sign: 'Aquarius', class: 'Spectral Architect' },
+    { id: 'nova', name: 'Operator: Nova', sign: 'Leo', class: 'Solar Sentinel' }
+  ];
 
-  const handleChatSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
-    sendMessage(chatInput);
-    setChatInput("");
+  const handleSendInvite = () => {
+    if (!inviteTarget) return;
+    setIsSendingInvite(true);
+    setTimeout(() => {
+      setIsSendingInvite(false);
+      setInviteTarget("");
+      alert("Invite signal broadcast to: " + inviteTarget);
+    }, 1500);
   };
 
   return (
@@ -77,236 +46,135 @@ export default function ConnectionsPage() {
         <p className="text-foreground/50 text-xs tracking-widest uppercase mt-2">Zero-Trust Mutual Authentication Layer</p>
       </header>
 
-      {/* Security Banner */}
-      {status === 'connected' && (
-        <div className="bg-red-950/40 border border-red-500/50 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4">
-           <div>
-             <h3 className="text-red-400 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-               Ghost Protocol Active
-             </h3>
-             <p className="text-red-300/70 text-xs font-mono mt-1">Direct P2P Tunnel. Zero server retention.</p>
+      {/* Split Dashboard View */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* LEFT: Grid Sidebar */}
+        <div className="lg:col-span-4 space-y-6">
+           
+           {/* Your Identity Card */}
+           <div className="bg-panel/40 border border-neon-purple/30 rounded-lg p-6 backdrop-blur-md">
+              <h3 className="text-[10px] text-neon-purple uppercase tracking-[0.2em] font-bold mb-4">Sovereign Origin</h3>
+              <div className="bg-black/40 border border-white/5 p-4 rounded text-center mb-6">
+                 <span className="text-[9px] text-white/40 uppercase block mb-1">Your Operator Code</span>
+                 <span className="text-xl text-white font-bold tracking-widest">{syncCode}</span>
+              </div>
+              
+              <div className="space-y-4">
+                 <div className="relative">
+                    <input 
+                      type="text" value={inviteTarget} onChange={(e) => setInviteTarget(e.target.value)}
+                      placeholder="Email or Phone..."
+                      className="w-full bg-black/50 border border-white/10 text-white px-4 py-3 rounded font-mono text-xs outline-none focus:border-neon-purple transition-all"
+                    />
+                 </div>
+                 <button 
+                   onClick={handleSendInvite} disabled={!inviteTarget || isSendingInvite}
+                   className="w-full py-3 bg-neon-purple/20 border border-neon-purple/50 text-neon-purple text-xs uppercase tracking-widest hover:bg-neon-purple hover:text-white transition-all disabled:opacity-50"
+                 >
+                    {isSendingInvite ? "Broadcasting..." : "[ Send Force Link ]"}
+                 </button>
+              </div>
            </div>
-           <button 
-             onClick={disconnect}
-             className="px-6 py-2 bg-red-900/40 hover:bg-red-800 border border-red-500/50 text-red-100 uppercase tracking-widest text-xs font-bold transition-all rounded"
-           >
-             [ Sever & Purge Link ]
-           </button>
-        </div>
-      )}
 
-      {errorMsg && (
-        <div className="text-red-400 border border-red-500/30 bg-red-950/20 p-4 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
-           System Alert: {errorMsg}
-        </div>
-      )}
-      {handshakeError && (
-        <div className="text-neon-amber border border-neon-amber/30 bg-orange-950/20 p-4 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
-           Handshake Error: {handshakeError}
-        </div>
-      )}
-
-      {/* Main UI Area */}
-      {status === 'connected' ? (
-        
-        // --- TERMINAL CHAT INTERFACE ---
-        <section className="bg-black/60 border border-cyan-900/50 rounded-lg overflow-hidden flex flex-col h-[500px]">
-          <div className="bg-cyan-950/30 border-b border-cyan-900/50 p-3 flex justify-between items-center">
-             <span className="text-cyan-500 text-xs font-mono uppercase tracking-[0.2em]">Encrypted Terminal</span>
-             <span className="text-cyan-500/50 text-[10px] font-mono">P2P TUNNEL // WEBRTC</span>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono scrollbar-thin scrollbar-thumb-cyan-900 scrollbar-track-transparent">
-             {messages.length === 0 && (
-               <div className="text-center text-cyan-800 text-xs uppercase mt-10">Uplink established. Awaiting input...</div>
-             )}
-             {messages.map((msg) => (
-                <div key={msg.id} className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[9px] text-cyan-600 uppercase">{msg.timestamp}</span>
-                    <span className={`text-[10px] font-bold tracking-wider ${msg.sender === 'me' ? 'text-neon-gold' : 'text-neon-purple'}`}>
-                      {msg.sender === 'me' ? 'LOCAL' : 'REMOTE'}
-                    </span>
-                  </div>
-                  <div className={`px-4 py-2 rounded max-w-[80%] break-words text-sm ${
-                    msg.sender === 'me' 
-                      ? 'bg-cyan-950/40 border border-cyan-800 text-cyan-100' 
-                      : 'bg-purple-950/40 border border-purple-800 text-purple-100'
-                  }`}>
-                    {msg.text}
-                  </div>
-                </div>
-             ))}
-             <div ref={messagesEndRef} />
-          </div>
-
-          <form onSubmit={handleChatSubmit} className="p-4 border-t border-cyan-900/50 bg-black/80 flex gap-2">
-            <input 
-              type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Inject payload..."
-              className="flex-1 bg-black border border-cyan-900 text-cyan-100 px-4 py-2 text-sm font-mono outline-none focus:border-cyan-400 transition-colors"
-            />
-            <button 
-              type="submit" 
-              disabled={!chatInput.trim()}
-              className="bg-cyan-900/50 hover:bg-cyan-800 border border-cyan-700 text-cyan-300 px-6 font-mono text-xs uppercase tracking-widest disabled:opacity-50 transition-colors"
-            >
-              Transmit
-            </button>
-          </form>
-        </section>
-
-      ) : (
-        
-        // --- QUANTUM HANDSHAKE INTERFACE ---
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* Initiator Block */}
-          <div className="bg-panel/40 border border-neon-gold/20 rounded-lg p-8 backdrop-blur-md relative group flex flex-col">
-              <div className="absolute inset-0 bg-neon-gold/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
-              <h3 className="text-xs text-neon-gold tracking-[0.2em] font-bold uppercase mb-6 text-center">Step 1: Initiate Tunnel</h3>
-              
-              {!localOffer ? (
-                <button 
-                   onClick={handleGenerateOffer}
-                   disabled={status !== 'idle'}
-                   className="w-full py-4 border border-neon-gold/50 bg-black/40 text-neon-gold uppercase text-xs tracking-[0.2em] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:bg-neon-gold/20 transition-all disabled:opacity-50 mt-4"
-                >
-                  {status === 'offering' ? 'Generating Keys...' : '[ Generate Ghost Link ]'}
-                </button>
-              ) : (
-                <div className="flex flex-col gap-4">
-                   <div className="text-[10px] text-foreground/60 uppercase">Share this key with receiver:</div>
-                   <div className="flex items-center gap-2">
-                     <input 
-                       readOnly 
-                       value={localOffer} 
-                       className="flex-1 bg-black/50 border border-neon-gold/30 text-neon-gold/70 px-3 py-2 text-xs font-mono outline-none truncate"
-                     />
-                     <button 
-                       onClick={() => navigator.clipboard.writeText(localOffer)}
-                       className="px-3 py-2 bg-neon-gold/20 border border-neon-gold/50 text-neon-gold text-[10px] uppercase hover:bg-neon-gold hover:text-black transition-colors"
-                     >
-                       Copy
-                     </button>
-                   </div>
-                   
-                   <div className="border-t border-white/10 my-2" />
-                   
-                   <div className="text-[10px] text-foreground/60 uppercase">Paste their Answer Key here:</div>
-                   <input 
-                     type="text"
-                     value={remoteAnswerInput}
-                     onChange={(e) => setRemoteAnswerInput(e.target.value)}
-                     className="w-full bg-black/50 border border-neon-gold/30 text-white px-3 py-2 text-xs font-mono outline-none focus:border-neon-gold"
-                     placeholder="PASTE BASE64 STRING..."
-                   />
-                   <button 
-                     onClick={handleFinalizeInitiator}
-                     disabled={!remoteAnswerInput}
-                     className="w-full py-3 bg-neon-gold/20 border border-neon-gold text-neon-gold uppercase text-xs hover:bg-neon-gold hover:text-black transition-colors disabled:opacity-50"
-                   >
-                     Initialize Handshake
-                   </button>
-                </div>
-              )}
-          </div>
-
-          {/* Receiver Block */}
-          <div className="bg-panel/40 border border-neon-purple/20 rounded-lg p-8 backdrop-blur-md relative group flex flex-col">
-              <div className="absolute inset-0 bg-neon-purple/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
-              <h3 className="text-xs text-neon-purple tracking-[0.2em] font-bold uppercase mb-6 text-center">Step 2: Receive Tunnel</h3>
-              
-              {!localAnswer ? (
-                <div className="flex flex-col gap-4 mt-4">
-                  <div className="text-[10px] text-foreground/60 uppercase">Paste Initiator's Key here:</div>
-                  <input 
-                    type="text"
-                    value={remoteOfferInput}
-                    onChange={(e) => setRemoteOfferInput(e.target.value)}
-                    className="w-full bg-black/50 border border-neon-purple/30 text-white px-3 py-2 text-xs font-mono outline-none focus:border-neon-purple"
-                    placeholder="PASTE BASE64 STRING..."
-                  />
-                  <button 
-                    onClick={handleAcceptOffer}
-                    disabled={!remoteOfferInput || status !== 'idle'}
-                    className="w-full py-3 bg-neon-purple/20 border border-neon-purple text-neon-purple uppercase text-xs hover:bg-neon-purple hover:text-white transition-colors disabled:opacity-50 shadow-[0_0_15px_rgba(188,19,254,0.1)]"
-                  >
-                    {status === 'connecting' ? 'Resolving Handshake...' : '[ Generate Answer Link ]'}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4 mt-4">
-                  <div className="text-[10px] text-neon-purple uppercase p-2 border border-neon-purple/30 bg-neon-purple/10 text-center">
-                    Acceptance Sequence Complete
-                  </div>
-                  <div className="text-[10px] text-foreground/60 uppercase">Return this Answer Key to Initiator:</div>
-                  <div className="flex items-center gap-2">
-                     <input 
-                       readOnly 
-                       value={localAnswer} 
-                       className="flex-1 bg-black/50 border border-neon-purple/30 text-neon-purple/70 px-3 py-2 text-xs font-mono outline-none truncate"
-                     />
-                     <button 
-                       onClick={() => navigator.clipboard.writeText(localAnswer)}
-                       className="px-3 py-2 bg-neon-purple/20 border border-neon-purple/50 text-neon-purple text-[10px] uppercase hover:bg-neon-purple hover:text-white transition-colors"
-                     >
-                       Copy
-                     </button>
-                  </div>
-                  <div className="mt-4 text-[10px] text-center text-foreground/40 italic">Awaiting final Initiator confirmation to open tunnel...</div>
-                </div>
-              )}
-          </div>
-        </section>
-      )}
-
-      {/* Confirmed Connections Grid */}
-      <section className="mt-8 space-y-6">
-         <div className="flex items-center gap-4 border-b border-white/10 pb-4">
-            <div className="w-2 h-2 rounded-full bg-neon-amber shadow-[0_0_8px_rgba(255,140,0,0.8)]" />
-            <h2 className="text-sm text-white uppercase tracking-[0.2em]">Confirmed Links</h2>
-            <span className="ml-auto text-xs text-foreground/50 tracking-widest uppercase">Nodes: {confirmedConnections.length}</span>
-         </div>
-
-         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {/* Active Connections */}
-            {confirmedConnections.map((conn) => (
-              <div 
-                key={conn.id}
-                className="bg-panel/40 border border-neon-gold/30 rounded-lg aspect-square flex flex-col items-center justify-center p-4 relative overflow-hidden group shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-neon-gold transition-colors"
-                title={`Synced: ${new Date(conn.timestamp).toLocaleDateString()}`}
-              >
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,215,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,215,0,0.02)_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none" />
-                  <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-neon-gold/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  
-                  <div className="w-10 h-10 rounded-full border border-neon-gold/50 flex items-center justify-center mb-3 bg-black/40 shadow-inner group-hover:shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-shadow">
-                    <span className="text-neon-gold text-lg">⌬</span>
-                  </div>
-                  <span className="text-[10px] text-white font-mono tracking-widest uppercase text-center leading-tight">
-                    {conn.name}
-                  </span>
+           {/* Confirmed Grid Connections */}
+           <div className="bg-panel/20 border border-white/5 rounded-lg overflow-hidden">
+              <div className="bg-white/5 px-4 py-2 border-b border-white/10 flex justify-between items-center">
+                 <span className="text-[10px] text-white/50 uppercase tracking-widest">Operator Roster</span>
+                 <span className="text-[10px] text-neon-gold">Nodes: 2</span>
               </div>
-            ))}
-
-            {/* Locked Placeholders */}
-            {[...Array(Math.max(0, 10 - confirmedConnections.length))].map((_, i) => (
-              <div 
-                key={`locked-${i}`} 
-                className="bg-black/30 border border-white/5 rounded-lg aspect-square flex flex-col items-center justify-center p-4 relative overflow-hidden group"
-              >
-                  {/* Subtle Grid Pattern */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none" />
-                  
-                  <span className="text-foreground/20 group-hover:text-foreground/40 transition-colors text-2xl mb-2">⎈</span>
-                  <span className="text-[9px] text-foreground/20 font-mono tracking-widest uppercase -mt-1 group-hover:text-foreground/40 transition-colors">Locked</span>
+              <div className="divide-y divide-white/5">
+                 {mockRoster.map(op => (
+                    <button 
+                      key={op.id}
+                      onClick={() => setSelectedOperator(op)}
+                      className={`w-full p-4 flex items-center gap-3 transition-colors text-left hover:bg-white/5 ${selectedOperator?.id === op.id ? 'bg-neon-gold/5 border-l-2 border-neon-gold' : ''}`}
+                    >
+                       <div className="w-8 h-8 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-neon-gold">⌬</div>
+                       <div className="flex flex-col">
+                          <span className="text-xs text-white font-bold uppercase">{op.name}</span>
+                          <span className="text-[9px] text-white/30 uppercase">{op.class} // {op.sign}</span>
+                       </div>
+                    </button>
+                 ))}
               </div>
-            ))}
-         </div>
-      </section>
+           </div>
+        </div>
+
+        {/* RIGHT: Synastry Engine / Resonance Dashboard */}
+        <div className="lg:col-span-8">
+           <AnimatePresence mode="wait">
+              {selectedOperator ? (
+                 <motion.div 
+                   key={selectedOperator.id}
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: -20 }}
+                   className="space-y-6"
+                 >
+                    {/* Analysis Header */}
+                    <div className="bg-black/40 p-6 rounded-lg border border-neon-gold/40 shadow-[0_0_20px_rgba(255,215,0,0.1)]">
+                       <h2 className="text-xl font-bold text-white uppercase tracking-widest mb-1">Aether Energy Analysis</h2>
+                       <p className="text-[10px] text-neon-gold uppercase tracking-[0.2em]">Synastry: You + {selectedOperator.name}</p>
+                    </div>
+
+                    {/* Resonance Card */}
+                    <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                       <h3 className="text-xs font-bold text-neon-purple uppercase tracking-widest mb-4">Resonance Overview</h3>
+                       <p className="text-sm text-foreground/80 leading-relaxed italic">
+                         "The convergence of your {selectedOperator.class} matrix with local telemetry indicates a high-frequency harmonic. The air of {selectedOperator.sign} complements your current drive, creating a stabilized vortex for collaborative expansion. Emotional grounding is required for long-term synchronization."
+                       </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       {/* Activities Card */}
+                       <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                          <h3 className="text-xs font-bold text-neon-green uppercase tracking-widest mb-4">Recommended Activities</h3>
+                          <ul className="space-y-3">
+                             {["Astral Sandbox collaboration", "Kinetic calibration exercises", "Shared sensory grounding sessions"].map((act, i) => (
+                                <li key={i} className="flex items-start gap-3">
+                                   <span className="w-1.5 h-1.5 rounded-full bg-neon-green mt-1.5 shrink-0" />
+                                   <span className="text-xs text-white/70 uppercase font-mono">{act}</span>
+                                </li>
+                             ))}
+                          </ul>
+                       </div>
+
+                       {/* Discussion Vectors Card */}
+                       <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                          <ul className="space-y-3">
+                             {["Bridging elemental gaps via sign logic", "Multi-dimensional career trajectories", "Optimizing collective epicyclic output"].map((vec, i) => (
+                                <li key={i} className="flex items-start gap-3">
+                                   <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan mt-1.5 shrink-0" />
+                                   <span className="text-xs text-white/70 uppercase font-mono">{vec}</span>
+                                </li>
+                             ))}
+                          </ul>
+                       </div>
+                    </div>
+
+                    <div className="bg-red-950/20 border border-red-500/30 p-4 rounded text-center">
+                       <p className="text-[10px] text-red-400 uppercase tracking-widest">
+                         [ CAUTION: Energy overlap exceeds 85% safety baseline ]
+                       </p>
+                    </div>
+                 </motion.div>
+              ) : (
+                 <motion.div 
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   className="h-full min-h-[400px] border border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center p-12 text-center"
+                 >
+                    <div className="text-4xl text-white/10 mb-6">⌬</div>
+                    <h3 className="text-lg text-white/30 uppercase tracking-[0.2em] mb-2 font-bold">Select Node</h3>
+                    <p className="max-w-xs text-xs text-white/20 uppercase tracking-widest leading-loose">
+                      Initialize synastry analysis by selecting a confirmed grid connection from your roster.
+                    </p>
+                 </motion.div>
+              )}
+           </AnimatePresence>
+        </div>
+      </div>
 
     </div>
   );
