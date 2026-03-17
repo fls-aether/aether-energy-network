@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 
 // Environment Variable Fallback: Check to ensure NEXT_PUBLIC_GOOGLE_PLACES_API_KEY is not accidentally bundled into server-side-only secrets
 if (
@@ -13,6 +15,7 @@ if (
 if (!process.env.GOOGLE_CLIENT_ID) console.error("CRITICAL: GOOGLE_CLIENT_ID is missing from environment");
 
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma) as any,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,

@@ -116,6 +116,9 @@ interface OperatorState {
   resetTelemetry: () => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
+  
+  // Phase 9: Cloud Sync
+  syncFromCloud: () => Promise<void>;
 }
 
 export const useOperatorStore = create<OperatorState>()(
@@ -142,13 +145,29 @@ export const useOperatorStore = create<OperatorState>()(
       })),
 
       telemetry: null,
-      setGlobalTelemetry: (payload) => set({ telemetry: payload }),
+      setGlobalTelemetry: (payload) => {
+        set({ telemetry: payload });
+        // Background sync to Neon Postgres
+        fetch('/api/telemetry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payload })
+        }).catch(err => console.error("Telemetry API push failed", err));
+      },
       
-      setOperatorAvatar: (avatarData) => set((state) => ({
-        telemetry: state.telemetry 
-          ? { ...state.telemetry, operatorAvatar: avatarData }
-          : null // Changed from undefined to null to match telemetry type
-      })),
+      setOperatorAvatar: (avatarData) => {
+        set((state) => ({
+          telemetry: state.telemetry 
+            ? { ...state.telemetry, operatorAvatar: avatarData }
+            : null
+        }));
+        // Background sync to Neon Postgres
+        fetch('/api/telemetry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatarUrl: avatarData })
+        }).catch(err => console.error("Avatar API push failed", err));
+      },
 
       userProfileImage: null,
       setUserProfileImage: (url) => set({ userProfileImage: url }),
@@ -163,6 +182,24 @@ export const useOperatorStore = create<OperatorState>()(
       }),
       telemetryLastUpdated: null,
       setTelemetryLastUpdated: (timestamp) => set({ telemetryLastUpdated: timestamp }),
+
+      syncFromCloud: async () => {
+        try {
+          const res = await fetch('/api/telemetry');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.telemetry) {
+              set({ 
+                telemetry: data.telemetry.payload as TelemetryPayload,
+                userProfileImage: data.telemetry.avatarUrl || null,
+                syncCode: data.telemetry.operatorCode || null
+              });
+            }
+          }
+        } catch (e) {
+          console.error("Cloud hydration failed:", e);
+        }
+      },
     }),
     {
       name: 'aether-energy-storage', // Key in localStorage
