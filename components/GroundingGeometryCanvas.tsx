@@ -99,7 +99,7 @@ export function GroundingGeometryCanvas({ onClose }: { onClose: () => void }) {
                 className="w-[80%] h-[80%] max-w-[300px] drop-shadow-lg z-10 overflow-visible transition-transform duration-700 ease-in-out"
                 style={{ transform: `rotate(${rotationDegree}deg)` }}
             >
-                <g stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeLinejoin="round">
+                <g stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeLinejoin="round" pointerEvents="all" fillRule="evenodd">
                     {/* Center Square (4 parts) */}
                     <polygon id="p1" points="100,100 130,70 100,40 70,70" fill={pathFills['p1'] || "transparent"} onClick={() => handlePathClick('p1')} className="cursor-pointer transition-colors duration-300 hover:fill-white/10" />
                     <polygon id="p2" points="100,100 130,130 160,100 130,70" fill={pathFills['p2'] || "transparent"} onClick={() => handlePathClick('p2')} className="cursor-pointer transition-colors duration-300 hover:fill-white/10" />

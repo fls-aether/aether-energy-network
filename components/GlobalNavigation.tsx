@@ -10,7 +10,7 @@ export function GlobalNavigation() {
   const { isRegistered, telemetry } = useOperatorStore();
 
   const links = [
-    { href: "/", label: "Daily Compass", icon: "❖" },
+    { href: "/", label: "Home", icon: "❖" },
     { href: "/identities", label: "Identities", icon: "☥" },
     { href: "/forecast", label: "Forecast", icon: "◷" },
     { href: "/connections", label: "Connections", icon: "⎈" },

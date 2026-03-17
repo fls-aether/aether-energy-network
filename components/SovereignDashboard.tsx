@@ -11,6 +11,15 @@ import { useOperatorStore, TelemetryPayload } from "@/lib/store";
 import { Canvas } from "@react-three/fiber";
 import { getGroundingScent } from "@/lib/scentMappings";
 
+function formatLunarDate(isoString: string) {
+  if (!isoString) return "";
+  try {
+     return new Date(isoString).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+  } catch (e) {
+     return isoString;
+  }
+}
+
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const [forecastError, setForecastError] = useState<string | null>(null);
@@ -153,14 +162,14 @@ export function SovereignDashboard() {
             <div className="bg-panel/50 border border-neon-purple/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] backdrop-blur-md relative overflow-hidden group transition-all hover:border-neon-purple/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-neon-purple text-[10px] font-mono tracking-widest uppercase mb-2 text-center">Next Full Moon</h3>
-               <p className="text-white text-sm font-mono tracking-widest uppercase text-center">{telemetry.nextFullMoon}</p>
+               <p className="text-white text-sm font-mono tracking-widest uppercase text-center">{formatLunarDate(telemetry.nextFullMoon)}</p>
             </div>
 
             {/* Next New Moon */}
             <div className="bg-panel/50 border border-neon-purple/20 rounded-lg p-6 flex flex-col items-center justify-center min-h-[100px] backdrop-blur-md relative overflow-hidden group transition-all hover:border-neon-purple/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-neon-purple text-[10px] font-mono tracking-widest uppercase mb-2 text-center">Next New Moon</h3>
-               <p className="text-white text-sm font-mono tracking-widest uppercase text-center">{telemetry.nextNewMoon}</p>
+               <p className="text-white text-sm font-mono tracking-widest uppercase text-center">{formatLunarDate(telemetry.nextNewMoon)}</p>
             </div>
 
             {/* Cosmic Anomalies */}

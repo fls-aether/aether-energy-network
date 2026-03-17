@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
-import { WireframeTorus } from "./WireframeTorus";
+import { WireframeMetatronsCube } from "./WireframeMetatronsCube";
 import { useOperatorStore } from "@/lib/store";
 import { calculateStats } from "@/lib/calculations";
 import { generateSyncCode } from "@/lib/utils";
@@ -199,7 +199,7 @@ export function IntakeManifold({ onComplete }: IntakeManifoldProps) {
       {/* 3D Merkaba Display */}
       <div className="w-full md:w-1/2 min-h-[50vh] md:h-screen relative z-10 flex items-center justify-center">
         <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-          <WireframeTorus intensity={intensity} />
+          <WireframeMetatronsCube intensity={intensity} />
         </Canvas>
         
         {/* Glow backdrop behind canvas */}

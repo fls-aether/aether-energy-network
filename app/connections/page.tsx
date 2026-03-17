@@ -124,7 +124,7 @@ export default function ConnectionsPage() {
         </div>
 
         {/* RIGHT: Synastry Engine / Resonance Dashboard */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 overflow-hidden min-w-0">
            <AnimatePresence mode="wait">
               {selectedOperator ? (
                  <motion.div 
