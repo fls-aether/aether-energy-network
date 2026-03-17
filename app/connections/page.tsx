@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useOperatorStore } from "@/lib/store";
+import { calculateResonanceBlueprint } from "@/lib/resonanceMatrix";
 
 export default function ConnectionsPage() {
   const { syncCode, setSyncCode, confirmedConnections } = useOperatorStore();
@@ -12,6 +13,8 @@ export default function ConnectionsPage() {
   const [selectedOperator, setSelectedOperator] = useState<any>(null);
   const [inviteTarget, setInviteTarget] = useState("");
   const [isSendingInvite, setIsSendingInvite] = useState(false);
+
+  const blueprint = calculateResonanceBlueprint(syncCode || "DEFAULT");
 
   // Generate Sync Code if missing
   useEffect(() => {
@@ -72,7 +75,7 @@ export default function ConnectionsPage() {
                    onClick={handleSendInvite} disabled={!inviteTarget || isSendingInvite}
                    className="w-full py-3 bg-neon-purple/20 border border-neon-purple/50 text-neon-purple text-xs uppercase tracking-widest hover:bg-neon-purple hover:text-white transition-all disabled:opacity-50"
                  >
-                    {isSendingInvite ? "Broadcasting..." : "[ Send Force Link ]"}
+                    {isSendingInvite ? "Broadcasting..." : "[ Send Connection Request ]"}
                  </button>
               </div>
            </div>
@@ -98,6 +101,25 @@ export default function ConnectionsPage() {
                     </button>
                  ))}
               </div>
+           </div>
+        </div>
+
+        {/* Ideal Resonance Blueprint */}
+        <div className="bg-panel/40 border border-neon-gold/30 rounded-lg p-6 backdrop-blur-md mb-6">
+           <h3 className="text-[10px] text-neon-gold uppercase tracking-[0.2em] font-bold mb-4">Ideal Resonance Blueprint</h3>
+           <div className="space-y-4">
+             <div className="bg-black/30 p-3 rounded border border-white/5">
+               <span className="text-[9px] text-neon-gold uppercase block mb-1">Primary Anchor</span>
+               <span className="text-xs text-white uppercase font-bold">{blueprint.primaryAnchor.archetype}</span>
+               <span className="text-[10px] text-white/50 block mt-1 pb-2">Ideal Origin: {blueprint.primaryAnchor.idealYears}</span>
+               <p className="text-[10px] text-foreground/70 italic border-t border-white/10 pt-2 lg:leading-relaxed">"{blueprint.primaryAnchor.synergyReasoning}"</p>
+             </div>
+             <div className="bg-black/30 p-3 rounded border border-white/5">
+               <span className="text-[9px] text-neon-purple uppercase block mb-1">Secondary Catalyst</span>
+               <span className="text-xs text-white uppercase font-bold">{blueprint.secondaryCatalyst.archetype}</span>
+               <span className="text-[10px] text-white/50 block mt-1 pb-2">Ideal Origin: {blueprint.secondaryCatalyst.idealYears}</span>
+               <p className="text-[10px] text-foreground/70 italic border-t border-white/10 pt-2 lg:leading-relaxed">"{blueprint.secondaryCatalyst.synergyReasoning}"</p>
+             </div>
            </div>
         </div>
 

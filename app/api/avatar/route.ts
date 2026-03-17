@@ -14,10 +14,10 @@ export async function POST(request: Request) {
        return NextResponse.json({ error: "Missing required telemetry (operatorClass, dominantSign)" }, { status: 400 });
     }
 
-    const prompt = `A highly detailed, metaphysical sacred geometry emblem representing a ${operatorClass} aligned with the energy of ${dominantSign}. Intricate golden ratio proportions, ethereal cosmic light, crystalline structures, and overlapping astral circles (resembling Metatron's Cube or the Seed of Life). Clean, symmetrical, and deeply mystical. Dark aethereal background with glowing cyan and gold line work. No text, no faces, purely geometric and esoteric.`;
+    const prompt = `A highly detailed, metaphysical sacred geometry emblem representing a ${operatorClass} aligned with the energy of ${dominantSign}. Intricate golden ratio proportions, ethereal cosmic light, crystalline structures, and overlapping astral circles (resembling Metatron's Cube or the Seed of Life). Clean, symmetrical, and deeply mystical. Dark aethereal background with glowing cyan and gold line work. No text, no faces, purely geometric and esoteric. Render in the style of a high-end graphic novel, heavy ink lines, cinematic lighting, cel-shaded, Moebius-inspired, mystical modern alchemy aesthetic.`;
 
-    // Construct exactly for the v1beta Imagen 3 endpoint
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+    // Construct exactly for the v1beta Imagen endpoint
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
 
     const requestBody = {
       instances: [

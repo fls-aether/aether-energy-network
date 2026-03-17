@@ -17,7 +17,7 @@ export function KineticStatSheet({ stats }: KineticStatSheetProps) {
   return (
     <div className="w-full max-w-sm space-y-6 mt-8 p-6 bg-panel/40 border border-white/5 rounded-lg backdrop-blur-sm shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
       <h3 className="text-neon-gold/50 text-xs font-mono uppercase tracking-[0.3em] border-b border-white/10 pb-2 mb-4">
-        Kinetic Output
+        Current Energy Drivers
       </h3>
       
       {stats.map((stat, i) => (

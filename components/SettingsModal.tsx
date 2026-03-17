@@ -61,6 +61,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const handleLogout = async () => {
     resetTelemetry();
     setRegistered(false);
+    localStorage.removeItem('aether-energy-storage');
     await signOut({ callbackUrl: "/" });
   };
 

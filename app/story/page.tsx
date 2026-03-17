@@ -48,7 +48,7 @@ export default function AdventurePortal() {
               Adventure Portal
             </h1>
             <p className="text-foreground/60 text-xs font-mono tracking-widest uppercase mt-1">
-              Active Quest Log // Telemetry Engine
+              Active Quest Log // Energy Matrix
             </p>
           </div>
         </motion.header>

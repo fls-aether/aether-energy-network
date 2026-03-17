@@ -140,7 +140,7 @@ export function CharacterGallery({ operatorClass, classDescription }: CharacterG
                            className="w-full py-3 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-500/50 rounded text-cyan-300 font-mono text-xs uppercase tracking-widest transition-all hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] relative overflow-hidden group/btn"
                         >
                            <span className="relative z-10 font-bold drop-shadow-[0_0_5px_rgba(0,255,255,0.8)] animate-pulse">
-                               [ Manifest Sovereign Insignia ]
+                               [ Reveal Soul Emblem ]
                            </span>
                            {/* Button hover flare */}
                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]" />

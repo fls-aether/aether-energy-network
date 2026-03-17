@@ -15,7 +15,7 @@ export function ActiveTransitTicker({ transit, energyStatus, isLoading }: Active
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-neon-purple/50 rounded-br-2xl" />
 
         <h3 className="text-foreground/50 text-[10px] uppercase tracking-[0.2em] mb-4 font-mono">
-            Active Transit Telemetry
+            Active Transit Energy Matrix
         </h3>
 
         {isLoading ? (

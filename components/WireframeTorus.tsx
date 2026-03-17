@@ -52,6 +52,30 @@ export function WireframeTorus({ intensity }: WireframeTorusProps) {
         />
       </mesh>
       
+      {/* Inner Vortex Torus 1 */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[1.5, 0.3, 16, 100]} />
+         <meshStandardMaterial
+          color="#9D00FF"
+          emissive="#9D00FF"
+          emissiveIntensity={0.5}
+          wireframe={true}
+          transparent={true}
+        />
+      </mesh>
+
+      {/* Inner Vortex Torus 2 */}
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <torusGeometry args={[1, 0.2, 16, 100]} />
+         <meshStandardMaterial
+          color="#FF8C00"
+          emissive="#FF8C00"
+          emissiveIntensity={0.5}
+          wireframe={true}
+          transparent={true}
+        />
+      </mesh>
+      
       {/* Base lighting for the material */}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={1} />

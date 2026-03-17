@@ -13,6 +13,7 @@ import { getGroundingScent } from "@/lib/scentMappings";
 
 export function SovereignDashboard() {
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
+  const [forecastError, setForecastError] = useState<string | null>(null);
   const { operatorDetails, telemetry, setGlobalTelemetry, telemetryLastUpdated, setTelemetryLastUpdated } = useOperatorStore();
   const tropicalSunSign = telemetry?.identitiesMatrix?.tropical?.find((p) => p.celestialBody === "Sun")?.sign;
 
@@ -47,10 +48,14 @@ export function SovereignDashboard() {
           }),
         });
         const data = await res.json();
+        if (!res.ok) {
+           throw new Error(data.error || "Aether Grid Offline: Schema Mapping Failed");
+        }
         setGlobalTelemetry(data);
         setTelemetryLastUpdated(Date.now());
-      } catch (e) {
+      } catch (e: any) {
         console.error("Forecast hydration failed:", e);
+        setForecastError(e.message || "Aether Grid Offline: Schema Mapping Failed");
       }
     }
     fetchForecast();
@@ -66,6 +71,18 @@ export function SovereignDashboard() {
     { label: "Stability", value: 38, frictionActive: true },
   ];
 
+  if (forecastError) {
+    return (
+      <div className="relative w-full h-screen bg-background flex flex-col items-center justify-center overflow-hidden">
+        <div className="border border-red-500/50 bg-red-950/20 p-8 rounded-xl backdrop-blur-md max-w-lg w-full text-center shadow-[0_0_30px_rgba(255,0,0,0.2)]">
+           <div className="text-red-500 text-4xl mb-4 font-bold">⚠</div>
+           <h2 className="text-red-400 font-mono uppercase tracking-[0.2em] mb-4">Connection Failed</h2>
+           <p className="text-red-200/80 font-mono text-xs uppercase tracking-widest">{forecastError}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!telemetry) {
     return (
       <div className="relative w-full h-screen bg-background flex flex-col items-center justify-center overflow-hidden">
@@ -76,7 +93,7 @@ export function SovereignDashboard() {
         </div>
         <div className="mt-48 z-20 flex flex-col items-center space-y-4">
           <div className="text-neon-gold text-sm font-mono tracking-[0.3em] uppercase animate-pulse">
-            Synthesizing Astral Telemetry
+            Synthesizing Energy Matrix
           </div>
           <div className="text-neon-purple text-xs font-mono tracking-widest opacity-70">
             Fetching Deep-Grid Coordinates...
@@ -126,7 +143,7 @@ export function SovereignDashboard() {
         
         {/* Contextual Summary */}
         <p className="text-foreground/80 text-sm font-mono tracking-widest uppercase text-center max-w-2xl mb-2 mt-4">
-          Real-time monitoring of your energetic telemetry and local cosmic environment.
+          Real-time monitoring of your energy matrix and local cosmic environment.
         </p>
 
         {/* Live Celestial Telemetry Module (Moved to Top) */}

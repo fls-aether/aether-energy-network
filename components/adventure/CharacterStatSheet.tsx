@@ -28,7 +28,7 @@ export function CharacterStatSheet({ stats }: CharacterStatSheetProps) {
 
       <div className="text-center border-b border-white/10 pb-4 mb-8 flex flex-col items-center">
         <h2 className="text-sm font-mono tracking-[0.3em] uppercase text-white/50 mb-2">
-          Biometric Integrity
+          Mind-Body Alignment
         </h2>
         <p className="text-[10px] font-mono tracking-widest text-foreground/50 uppercase max-w-xl">
           Real-time synthesis of your elemental and numerical stability derived from your active transit data.

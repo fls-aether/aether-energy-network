@@ -40,46 +40,23 @@ export function LoginGate({ onComplete }: LoginGateProps) {
       >
         <div className="mb-10 text-center flex flex-col items-center">
           <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
-            {/* Ouroboros SVG Wrapper */}
+            {/* Ouroboros Wrapper */}
             <motion.div
               className="absolute inset-0 z-20"
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 15, ease: "linear", repeat: Infinity }}
             >
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]">
-                <defs>
-                  <linearGradient id="ouroborosGlowLG" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
-                    <stop offset="50%" stopColor="#FF8C00" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#FFD700" stopOpacity="0.2" />
-                  </linearGradient>
-                  <filter id="glowEffectLG" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="2" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
-                <path 
-                  d="M50 10 A40 40 0 1 1 45 10.3" 
-                  stroke="url(#ouroborosGlowLG)" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
-                  filter="url(#glowEffectLG)"
-                />
-                <path 
-                  d="M47 7 L43 10.3 L47 13.6 Z" 
-                  fill="#FFD700" 
-                  filter="url(#glowEffectLG)"
-                />
-              </svg>
+              <Image 
+                src="/images/aether-network-logo-outer-ouroboros.png"
+                alt="Aether Network Ouroboros"
+                fill
+                className="object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+              />
             </motion.div>
             {/* Inner Geometry */}
             <motion.div
               className="absolute inset-0 z-10"
-              animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
             >
               <Image 
-                src="/images/aether-network-logo3.png" 
+                src="/images/aether-network-logo-inner-geometry.png" 
                 alt="Aether Network Logo" 
                 fill 
                 className="object-contain scale-75"
