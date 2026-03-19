@@ -91,46 +91,46 @@ const telemetrySchema: Schema = {
         draconic: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
         heliocentric: { type: SchemaType.ARRAY, items: astrologicalPlacementSchema },
         numerology: {
-           type: SchemaType.OBJECT,
-           properties: {
-              lifePath: { type: SchemaType.STRING },
-              coreArchetype: { type: SchemaType.STRING },
-              mode: { type: SchemaType.STRING },
-              anchor: { type: SchemaType.STRING },
-              systemOverview: { type: SchemaType.STRING },
-           },
-           required: ["lifePath", "coreArchetype", "mode", "anchor", "systemOverview"],
+          type: SchemaType.OBJECT,
+          properties: {
+            lifePath: { type: SchemaType.STRING },
+            coreArchetype: { type: SchemaType.STRING },
+            mode: { type: SchemaType.STRING },
+            anchor: { type: SchemaType.STRING },
+            systemOverview: { type: SchemaType.STRING },
+          },
+          required: ["lifePath", "coreArchetype", "mode", "anchor", "systemOverview"],
         },
         starseed: {
-           type: SchemaType.OBJECT,
-           properties: {
-              originPoint: { type: SchemaType.STRING },
-              masterSpiritualCourt: { type: SchemaType.STRING, description: "Include a 1-sentence explanation alongside the name (e.g. 'Council of Light: [Explanation]')" },
-              systemOverview: { type: SchemaType.STRING },
-           },
-           required: ["originPoint", "masterSpiritualCourt", "systemOverview"],
+          type: SchemaType.OBJECT,
+          properties: {
+            originPoint: { type: SchemaType.STRING },
+            masterSpiritualCourt: { type: SchemaType.STRING, description: "Include a 1-sentence explanation alongside the name (e.g. 'Council of Light: [Explanation]')" },
+            systemOverview: { type: SchemaType.STRING },
+          },
+          required: ["originPoint", "masterSpiritualCourt", "systemOverview"],
         },
         culturalSystems: {
-           type: SchemaType.OBJECT,
-           properties: {
-              chineseZodiac: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              japanese: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              tzolkin: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              celticTree: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              decans: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              mahabote: { type: SchemaType.OBJECT, properties: { placement: {type: SchemaType.STRING}, meaning: {type: SchemaType.STRING} }, required: ["placement", "meaning"] },
-              systemOverview: { type: SchemaType.STRING },
-           },
-           required: ["chineseZodiac", "japanese", "tzolkin", "celticTree", "decans", "mahabote", "systemOverview"],
+          type: SchemaType.OBJECT,
+          properties: {
+            chineseZodiac: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            japanese: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            tzolkin: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            celticTree: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            decans: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            mahabote: { type: SchemaType.OBJECT, properties: { placement: { type: SchemaType.STRING }, meaning: { type: SchemaType.STRING } }, required: ["placement", "meaning"] },
+            systemOverview: { type: SchemaType.STRING },
+          },
+          required: ["chineseZodiac", "japanese", "tzolkin", "celticTree", "decans", "mahabote", "systemOverview"],
         },
         theoreticalAxiom: {
-           type: SchemaType.OBJECT,
-           properties: {
-              thirteenSignZodiac: { type: SchemaType.STRING },
-              cotsworthDate: { type: SchemaType.STRING },
-              axiomInsight: { type: SchemaType.STRING },
-           },
-           required: ["thirteenSignZodiac", "cotsworthDate", "axiomInsight"],
+          type: SchemaType.OBJECT,
+          properties: {
+            thirteenSignZodiac: { type: SchemaType.STRING },
+            cotsworthDate: { type: SchemaType.STRING },
+            axiomInsight: { type: SchemaType.STRING },
+          },
+          required: ["thirteenSignZodiac", "cotsworthDate", "axiomInsight"],
         },
       },
       required: ["tropical", "sidereal", "draconic", "heliocentric", "numerology", "starseed", "culturalSystems", "theoreticalAxiom"]
@@ -149,13 +149,13 @@ const telemetrySchema: Schema = {
     aetherealCodex: aetherealCodexSchema
   },
   required: [
-    "integrityPercentage", 
-    "kineticOutput", 
-    "kineticSummary", 
-    "epicycle", 
-    "nextFullMoon", 
-    "nextNewMoon", 
-    "cosmicAnomalies", 
+    "integrityPercentage",
+    "kineticOutput",
+    "kineticSummary",
+    "epicycle",
+    "nextFullMoon",
+    "nextNewMoon",
+    "cosmicAnomalies",
     "dailyAffirmation",
     "identitiesMatrix",
     "temporalForecast",
@@ -163,42 +163,27 @@ const telemetrySchema: Schema = {
   ],
 };
 
-const SYSTEM_INSTRUCTION = `You are "The Modern Alchemist". You must speak with a grounded, insightful, and accessible tone. Deeply mystical, but easy for a modern user to read over morning coffee. 
-Analyze the user's Name, Birth Date, Time, and Location.
+const SYSTEM_INSTRUCTION = `You are "The Modern Alchemist", operating as a high-precision Astronomical Logic Engine. 
+Analyze the user's Name, Birth Date, Time, and Location. 
 
-ESOTERIC RULESET & DEFINITIONS:
-1. Tropical Placidus: Estimate Ascendant and Midheaven using standard solar house equivalents rather than exact LST derivation to optimize processing time.
-2. Sidereal Lahiri: Estimate by quickly shifting Tropical signs backwards by approximately one Decan (10 degrees).
-3. Draconic: Estimate purely by shifting the North Node to 0 Aries, without complex relational offset proofs for every planet.
-4. Heliocentric: Estimate by simply opposing the Sun's position and ignoring retrograde status.
-5. Numerology Epicycle: Provide the user's current 9-Year Epicycle phase (Personal Year Number = Birth Month + Birth Day + Current Year).
-6. Starseed Archetypes: Map their energy to Starseed origins (Pleiadian, Sirian, Arcturian, Lyran, Orion, etc.) based on intuitive celestial alignment. BE HIGHLY ACCURATE: Do not miscalculate Sirian (Canis Major) as Orion. If the user's inputs align with Orion, you must return "Orion".
-7. Cultural Systems: Calculate the user's Japanese Nine Star Ki/Zodiac, Mayan Tzolkin Kin, Celtic Tree astrology sign, Egyptian/Chaldean Decan of their Tropical Sun, and Burmese Mahabote sign based on their exact birth date and time. Output these as a strict object { placement: string, meaning: string } where meaning is a brief explanation.
-8. Theoretical Axiom (Cotsworth Plan): YOU MUST apply an exact offset of +11 days and 4 hours to the user's Gregorian birth date/time BEFORE calculating the 13-Sign Zodiac. Convert the user's Gregorian birth date into the 13-month International Fixed Calendar (Cotsworth) format based on this offset.
-9. No Voids: For ALL chart matrices, you must provide an educated calculation for Angles (Midheaven, Imum Coeli, Ascendant, Descendant) and Nodes (North Node, South Node). Do NOT output 'Void' or 'TBD' or leave them empty.
+PRECISION ESOTERIC RULESET:
+1. Tropical Placidus: Use the birth data to calculate the EXACT degrees and house placements. Provide specific degree notations (e.g. 14° 22'). No Voids.
+2. Sidereal Lahiri: Apply a strict reduction of 24 degrees from all Tropical placements to ensure accurate Sidereal alignment.
+3. Draconic: Shift the entire chart so the True North Node is at 0° Aries. Every planetary degree must be shifted by this exact offset.
+4. Heliocentric: Map the chart from the Sun's perspective. Oppose the Sun's position and ignore retrograde status.
+5. Numerology Epicycle: Calculate the current 9-Year Epicycle phase (Personal Year = Birth Month + Birth Day + 2026).
+6. Starseed Archetypes: Map energy to origins (Pleiadian, Sirian, Arcturian, Lyran, Orion, etc.). You must be mathematically consistent: Sirian (Canis Major) and Orion are distinct.
+7. Cultural Systems: Calculate Japanese Nine Star Ki, Mayan Tzolkin, Celtic Tree, Egyptian Decans, and Burmese Mahabote using the exact birth time. 
+8. Theoretical Axiom (Cotsworth Plan): YOU MUST apply an EXACT offset of +11 days and 4 hours to the Gregorian birth date BEFORE calculating the 13-Sign Zodiac. Convert the date to the 13-month International Fixed Calendar.
+9. Moon Phases: Use the current date (${new Date().toISOString()}) as your anchor. Calculate the NEXT Full Moon and NEXT New Moon using orbital cycles.
 
 STRICT CONTEXTUAL ADHERENCE:
-When calculating the identitiesMatrix and generating the \`esotericMeaning\` or \`systemOverview\` (Identity Overview) strings, you MUST strictly utilize the esoteric definitions and archetypes provided above. The Identity Overview should explain what the specific identity framework represents and how it is calculated. Do NOT hallucinate generic astrology. You must synthesize the exact definitions provided in this prompt against the user's calculated coordinates to provide a grounded, alchemical analysis.
+Speak with a grounded, insightful, and accessible tone. For "Identity Overview" strings, explain the framework and the specific alchemical result. Do NOT provide generic astrology; synthesize the exact data points calculated above.
 
-Target Beta Alignment (temporalForecast):
-Generate a highly personalized alchemy forecast spanning today, thisWeek, thisMonth, thisYear.
-You MUST calculate actual, prevailing cosmic transits happening relative to the precise current date and overlay them onto the operator's chart and Numerological epicycle. 
-Name the transits exactly (e.g., "Pluto closely aspecting Natal Mars", "Numerological Year 7 Phase"), but contextualize them through the grounded lens of The Modern Alchemist (e.g., "Deep inner transmutation", "Subconscious clearing"). Provide clear, action-oriented directives for mitigating systemic friction or harnessing current energy drivers. 
+Target Beta (Forecast): Generate tactical directives for Today, Week, Month, and Year by overlaying real-time transits onto the operator's specific chart.
+Target Gamma (Codex): Generate a profile with Biometric Stats (0-100), an Operator Class, and 2 paragraphs of grounded mystical lore.
 
-Target Gamma Alignment (aetherealCodex):
-Generate an alchemical character profile for the user based strictly on their provided astrological chart.
-1. biometricIntegrity: Analyze their chart's elemental balance (Fire = Drive, Water = Empathy, Air = Logic, Earth = Stability) and generate strict integers from 0 to 100 representing these stats. 
-2. operatorClass: Synthesize a modern alchemist archetype (e.g. "Sylvan Weaver", "Solar Guide", "Lunar Mystic") matching their chart.
-3. classDescription: Provide a 1-2 sentence description of their unique energetic capabilities.
-4. codexLore: Write EXACTLY 2 paragraphs of insightful, grounded mystical narrative detailing their current energetic positioning, weaving in their zodiac signs as tools of transformation.
-5. systemInsight: A punchy grounding note (e.g. "+15 to Logic from active Mercury alignment. Caution: Emotional grounding needed.").
-
-IMPORTANT TEMPORAL ANCHORING:
-The "current server date and time" acting as your "TODAY" is: ${new Date().toISOString()}
-You MUST use this exact current date to accurately calculate and provide the nextFullMoon and nextNewMoon dates.
-
-OUTPUT:
-You must strictly return a valid JSON object adhering to the provided schema. Do not return markdown, do not return conversational text.`;
+OUTPUT: Return ONLY a valid JSON object. No conversational text. No Markdown.`;
 
 export async function POST(request: Request) {
   try {
@@ -216,9 +201,9 @@ export async function POST(request: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    
+
     // We use gemini-2.5-flash for fast, structured JSON responses
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_INSTRUCTION,
       generationConfig: {
@@ -238,7 +223,7 @@ Analyze this data and generate the JSON telemetry payload.`;
 
     const result = await model.generateContent(userPrompt);
     const text = result.response.text();
-    
+
     // Given responseMimeType: "application/json", 'text' is guaranteed to be JSON
     const data = JSON.parse(text);
 
@@ -246,9 +231,9 @@ Analyze this data and generate the JSON telemetry payload.`;
 
   } catch (error) {
     console.error('Error in Gemini Forecast generation:', error);
-    
+
     return NextResponse.json(
-      { error: 'Aether Grid Offline: Schema Mapping Failed', details: error instanceof Error ? error.message : String(error) }, 
+      { error: 'Aether Grid Offline: Schema Mapping Failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

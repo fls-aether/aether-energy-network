@@ -11,7 +11,7 @@ export function GlobalHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const toggleAudio = () => {
@@ -32,14 +32,19 @@ export function GlobalHeader() {
     <>
       <div className="fixed top-6 right-6 z-50 pointer-events-auto flex items-center gap-3">
         {/* User Profile Avatar Slot */}
-        {userProfileImage && (
-            <div className="w-10 h-10 rounded-full border border-neon-cyan/50 p-0.5 overflow-hidden shadow-[0_0_10px_rgba(0,255,255,0.2)]">
-               <div 
-                 className="w-full h-full rounded-full bg-cover bg-center" 
-                 style={{ backgroundImage: `url(${userProfileImage})` }} 
-               />
+        <div className="w-10 h-10 rounded-full border border-neon-cyan/50 p-0.5 overflow-hidden shadow-[0_0_10px_rgba(0,255,255,0.2)] bg-black/40">
+          {userProfileImage ? (
+            <img
+              src={userProfileImage}
+              alt="Operator Profile"
+              className="w-full h-full rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-neon-cyan/30 text-xs font-mono">
+              OP
             </div>
-        )}
+          )}
+        </div>
 
         {/* Ambient Audio Toggle */}
         <button
@@ -48,9 +53,9 @@ export function GlobalHeader() {
           title="Toggle Ambient Audio"
         >
           {isPlaying ? (
-             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
           ) : (
-             <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
           )}
         </button>
 
@@ -73,20 +78,20 @@ export function GlobalHeader() {
         </button>
       </div>
 
-      <audio 
-        ref={audioRef} 
-        loop 
-        autoPlay={false} 
-        src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" 
+      <audio
+        ref={audioRef}
+        loop
+        autoPlay={false}
+        src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3"
       />
 
       <AnimatePresence>
-         {isCanvasOpen && <GroundingGeometryCanvas onClose={() => setIsCanvasOpen(false)} />}
+        {isCanvasOpen && <GroundingGeometryCanvas onClose={() => setIsCanvasOpen(false)} />}
       </AnimatePresence>
 
-      <SettingsModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <SettingsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </>
   );
