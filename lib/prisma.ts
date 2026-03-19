@@ -7,7 +7,11 @@ const connectionString = `${process.env.DATABASE_URL}`
 
 const prismaClientSingleton = () => {
   const pool = new Pool({ connectionString })
-  const adapter = new PrismaPg(pool)
+
+  // By casting pool "as any", we bypass the strict version mismatch
+  // between the @types/pg library and Prisma's internal types.
+  const adapter = new PrismaPg(pool as any)
+
   return new PrismaClient({ adapter })
 }
 
