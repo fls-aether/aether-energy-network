@@ -4,9 +4,12 @@ import { PrismaPg } from '@prisma/adapter-pg'
 
 const connectionString = `${process.env.DATABASE_URL}`
 const pool = new Pool({ connectionString })
-const adapter = new PrismaPg(pool)
+
+// Apply the bypass here as well!
+const adapter = new PrismaPg(pool as any)
 const prisma = new PrismaClient({ adapter })
 
+// This is the payload.
 // This is the payload. 
 const lexiconData = [
     // --- PHASE 1: ZODIAC ARCHETYPES ---
