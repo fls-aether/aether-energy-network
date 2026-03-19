@@ -1,7 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-// Initialize Prisma (reuses existing connection if available)
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma';
 
 /**
  * Fetches a custom Modern Alchemist definition from the Neon Database.
