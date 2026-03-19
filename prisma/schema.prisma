@@ -69,3 +69,14 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+model LexiconEntry {
+  id          String   @id @default(cuid())
+  category    String   // e.g., "Zodiac", "Planet", "Numerology"
+  key         String   @unique // e.g., "Aries", "Sun", "LifePath1"
+  title       String   // e.g., "Aries (The Initiator)"
+  description String   @db.Text
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
