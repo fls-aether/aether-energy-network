@@ -22,14 +22,17 @@ export async function GET(request: Request) {
         });
 
         // 4. Format the raw database rows into a clean, easy-to-read dictionary object for the frontend
-        const lexiconMap = entries.reduce((acc, entry) => {
+        type LexiconDictionary = Record<string, { title: string; description: string; category: string }>;
+        type LexiconRow = { key: string; title: string; description: string; category: string };
+
+        const lexiconMap = entries.reduce((acc: LexiconDictionary, entry: LexiconRow) => {
             acc[entry.key] = {
                 title: entry.title,
                 description: entry.description,
                 category: entry.category
             };
             return acc;
-        }, {} as Record<string, { title: string, description: string, category: string }>);
+        }, {} as LexiconDictionary);
 
         // 5. Return the payload
         return NextResponse.json({ lexicon: lexiconMap }, { status: 200 });
