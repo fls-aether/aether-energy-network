@@ -101,12 +101,6 @@ interface OperatorState {
   operatorDetails: { name: string; date: string; time: string; location: string } | null;
   setOperatorDetails: (details: { name: string; date: string; time: string; location: string } | null) => void;
 
-  // Phase 9: Cloud Sync
-  syncFromCloud: () => Promise<void>;
-
-  // Cache Override
-  forceRecalibration: () => void;
-
   // Phase 26 additions
   syncCode: string | null;
   setSyncCode: (code: string) => void;
@@ -116,12 +110,16 @@ interface OperatorState {
   telemetry: TelemetryPayload | null;
   setGlobalTelemetry: (payload: TelemetryPayload) => void;
   setOperatorAvatar: (avatarData: string) => void;
+
   // Persistent user selected profile image independent of current telemetry
   userProfileImage: string | null;
   setUserProfileImage: (url: string | null) => void;
   resetTelemetry: () => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
+
+  // Cache Override
+  forceRecalibration: () => void;
 
   // Phase 9: Cloud Sync
   syncFromCloud: () => Promise<void>;
