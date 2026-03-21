@@ -97,10 +97,16 @@ interface OperatorState {
   setAgeData: (age: number, isAdult: boolean) => void;
   stats: TelemetryStats | null;
   setStats: (stats: TelemetryStats) => void;
-  
+
   operatorDetails: { name: string; date: string; time: string; location: string } | null;
   setOperatorDetails: (details: { name: string; date: string; time: string; location: string } | null) => void;
-  
+
+  // Phase 9: Cloud Sync
+  syncFromCloud: () => Promise<void>;
+
+  // Cache Override
+  forceRecalibration: () => void;
+
   // Phase 26 additions
   syncCode: string | null;
   setSyncCode: (code: string) => void;
@@ -116,7 +122,7 @@ interface OperatorState {
   resetTelemetry: () => void;
   telemetryLastUpdated: number | null;
   setTelemetryLastUpdated: (timestamp: number) => void;
-  
+
   // Phase 9: Cloud Sync
   syncFromCloud: () => Promise<void>;
 }
@@ -131,13 +137,13 @@ export const useOperatorStore = create<OperatorState>()(
       setAgeData: (age, isAdult) => set({ userAge: age, isAdult }),
       stats: null,
       setStats: (stats) => set({ stats }),
-      
+
       operatorDetails: null,
       setOperatorDetails: (details) => set({ operatorDetails: details }),
-      
+
       syncCode: null,
       setSyncCode: (code) => set({ syncCode: code }),
-      
+
       // Mock Data initialized for Phase 26
       confirmedConnections: [],
       addConnection: (connection) => set((state) => ({
@@ -154,10 +160,10 @@ export const useOperatorStore = create<OperatorState>()(
           body: JSON.stringify({ payload })
         }).catch(err => console.error("Telemetry API push failed", err));
       },
-      
+
       setOperatorAvatar: (avatarData) => {
         set((state) => ({
-          telemetry: state.telemetry 
+          telemetry: state.telemetry
             ? { ...state.telemetry, operatorAvatar: avatarData }
             : null
         }));
@@ -172,16 +178,21 @@ export const useOperatorStore = create<OperatorState>()(
       userProfileImage: null,
       setUserProfileImage: (url) => set({ userProfileImage: url }),
 
-      resetTelemetry: () => set({ 
+      resetTelemetry: () => set({
         // Assuming 'identity', 'activeSystem' are properties that might be added later,
         // for now, only resetting telemetry and stats as per context.
         // identity: null, 
-        telemetry: null, 
-        stats: null, 
+        telemetry: null,
+        stats: null,
         // activeSystem: "Tropical Placidus" 
       }),
       telemetryLastUpdated: null,
       setTelemetryLastUpdated: (timestamp) => set({ telemetryLastUpdated: timestamp }),
+
+      forceRecalibration: () => set({
+        telemetry: null,
+        telemetryLastUpdated: null
+      }),
 
       syncFromCloud: async () => {
         try {
@@ -189,7 +200,7 @@ export const useOperatorStore = create<OperatorState>()(
           if (res.ok) {
             const data = await res.json();
             if (data.telemetry) {
-              set({ 
+              set({
                 telemetry: data.telemetry.payload as TelemetryPayload,
                 userProfileImage: data.telemetry.avatarUrl || null,
                 syncCode: data.telemetry.operatorCode || null

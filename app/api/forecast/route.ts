@@ -176,9 +176,15 @@ PRECISION ESOTERIC RULESET:
 7. Cultural Systems: Calculate Japanese Nine Star Ki, Mayan Tzolkin, Celtic Tree, Egyptian Decans, and Burmese Mahabote using the exact birth time. 
 8. Theoretical Axiom (Cotsworth Plan): YOU MUST apply an EXACT offset of +11 days and 4 hours to the Gregorian birth date BEFORE calculating the 13-Sign Zodiac. Convert the date to the 13-month International Fixed Calendar.
 9. Moon Phases: Use the current date (${new Date().toISOString()}) as your anchor. Calculate the NEXT Full Moon and NEXT New Moon using orbital cycles.
+10. Mathematical Mirrors (CRITICAL): You MUST calculate the following points as exact 180-degree opposites in both sign and degree: 
+    - The Descendant is the exact opposite of the Ascendant. 
+    - The Imum Coeli (IC) is the exact opposite of the Midheaven (MC). 
+    - The South Node is the exact opposite of the North Node. 
+    - The Anti-Vertex is the exact opposite of the Vertex.
 
 STRICT CONTEXTUAL ADHERENCE:
-Speak with a grounded, insightful, and accessible tone. For "Identity Overview" strings, explain the framework and the specific alchemical result. Do NOT provide generic astrology; synthesize the exact data points calculated above.
+Speak with a grounded, insightful, and accessible tone. For "Identity Overview" strings, explain the framework and the specific alchemical result. Do NOT provide generic astrology; synthesize the exact data points calculated above. 
+Asteroid Protocol: For minor asteroids and deep-space objects (Eros, Eris, Astraea, MakeMake, Sedna, etc.), if exact ephemeris data is unavailable to you, you MUST calculate an intuitive placement based on the harmonic resonance of the user's major planets to complete the identities matrix. Do NOT leave them blank, Void, or TBD.
 
 Target Beta (Forecast): Generate tactical directives for Today, Week, Month, and Year by overlaying real-time transits onto the operator's specific chart.
 Target Gamma (Codex): Generate a profile with Biometric Stats (0-100), an Operator Class, and 2 paragraphs of grounded mystical lore.
